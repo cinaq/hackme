@@ -1,0 +1,86 @@
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    background-color: #777;
+    border-radius: 30px;
+
+    &.inverse {
+        background-color: #fff;
+        border: 1px solid;
+    }
+}
+
+.badge-lg {
+    padding: 8px 14px;
+    font-size: 13px;
+}
+
+.badge-sm {
+    padding: 4px 8px;
+    font-size: 11px;
+    line-height: 1.1;
+}
+
+.badge-default {
+    background-color: $brand-default;
+
+    &.inverse {
+        color: $brand-default;
+    }
+}
+
+.badge-primary {
+    background-color: $brand-primary;
+
+    &.inverse {
+        color: $brand-primary;
+    }
+}
+
+.badge-inverse {
+    background-color: $brand-inverse;
+
+    &.inverse {
+        color: $brand-inverse;
+    }
+}
+
+.badge-success {
+    background-color: $brand-success;
+
+    &.inverse {
+        color: $brand-success;
+    }
+}
+
+.badge-info {
+    background-color: $brand-info;
+
+    &.inverse {
+        color: $brand-info;
+    }
+}
+
+.badge-warning {
+    background-color: $brand-warning;
+
+    &.inverse {
+        color: $brand-warning;
+    }
+}
+
+.badge-danger {
+    background-color: $brand-danger;
+
+    &.inverse {
+        color: $brand-danger;
+    }
+}

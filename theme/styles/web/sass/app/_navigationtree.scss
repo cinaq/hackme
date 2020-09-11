@@ -1,0 +1,58 @@
+.region-sidebar {
+    .mx-navigationtree {
+        padding: 20px 15px;
+
+        .navbar-inner>ul {
+            display: flex;
+            flex-wrap: wrap;
+            overflow: visible;
+            flex-direction: row;
+
+            &>li {
+                height: 90px;
+                flex: 1;
+                max-width: 95px;
+                margin-right: 15px;
+                margin-bottom: 15px;
+
+                &:nth-child(2n) {
+                    margin-right: 0;
+                }
+
+                &>a {
+                    height: 100%;
+                    padding: 0;
+                    position: relative;
+                    border-color: transparent;
+                    background-color: transparent;
+                    outline: 0;
+                    font-weight: 600;
+                    color: #1F2E49;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    text-align: center;
+                    border-radius: 6px;
+                    font-size: 0.9rem;
+
+                    .caret {
+                        display: none;
+                    }
+
+                    .glyphicon {
+                        margin-right: 0;
+                        font-size: 2rem;
+                    }
+                }
+
+                a:hover,
+                a:focus,
+                a.active {
+                    background-color: $navigation-bg-hover;
+                    box-shadow: 5px 12px 20px rgba(36, 37, 38, 0.13);
+                    color: $navigation-color-active;
+                }
+            }
+        }
+    }
+}

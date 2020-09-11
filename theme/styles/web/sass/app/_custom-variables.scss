@@ -1,0 +1,124 @@
+//== Gray Shades
+//## Different gray shades to be used for our variables and components
+$gray-darker:                                       #222222;
+$gray-dark:                                         #333333;
+$gray:                                              #555555;
+$gray-light:                                        #888888;
+$gray-primary:                                      #D7D7D7;
+$gray-lighter:                                      #EEEEEE;
+
+//== Step 1: Brand Colors
+$brand-default:                                     #CCCCCC;
+$brand-primary:                                     #0595db;
+$brand-inverse:                                     #252C36;
+$brand-info:                                        #33B6E6;
+$brand-success:                                     #6fd162;
+$brand-warning:                                     #F99B1D;
+$brand-danger:                                      #FF5D5D;
+
+// Used for other variables
+$default-border-color:                              $gray-primary;
+//== Step 3: Typography
+$font-family-import:                                "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700";
+$font-family-base:                                  "Open Sans", sans-serif;
+$root-font-size:                                    14px;
+$font-base-size:                                    14px;
+$font-base-color:                                   #333435;
+$link-color:                                        $brand-primary;
+$font-size-h1:                                      32px;
+$font-size-h2:                                      28px;
+$font-size-h3:                                      20px;
+$font-size-h4:                                      18px;
+$font-size-h5:                                      16px;
+$font-color-headers:                                #333435;
+$font-weight-header:                                700;
+$font-header-margin:                                0;
+$font-color-detail:                                 #6a6969;
+$navsidebar-font-size:                              16px;
+
+//== Step 2: UI Customization
+
+// Topbar
+$topbar-bg:                                         transparent;
+$navtopbar-border-color:                            #d7d7d7;
+$topbar-border-color:                               #000;
+$topbar-minimalheight:                              60px;
+$navtopbar-color:                                   $font-base-color;
+$navbar-brand-name:                                 $default-border-color;
+$brand-logo:                                        "../../../resources/approvals.svg";
+$brand-logo-height:                                 39px;
+$brand-logo-width:                                  123px;
+
+// Sidebar
+$sidebar-bg:                                        $brand-inverse;
+$navsidebar-color:                                  rgba(255,255,255,0.9);
+$navsidebar-color-hover:                            rgba(255,255,255,1);
+$navigation-bg:                                     transparent;
+$navigation-item-height:                            60px;
+$navigation-bg-hover:                               #0A1223;
+
+// Backgrounds
+$bg-color:                                          #f6f6f6;
+$bg-color-secondary:                                #F5F8FD;
+$sidebar-bg:                                        linear-gradient(-180deg, #1F2E49 35%, #0A1223 74%);
+$navsidebar-bg-hover:                               $sidebar-bg;
+$navsidebar-bg-active:                              $sidebar-bg;
+$navsidebar-sub-bg:                                 $sidebar-bg;
+$brand-gradient:                                    linear-gradient(152deg, #0CC7F0 0%, #087ECC 51%, #077AC9 55%, #0659B9 78%);
+// == Old variables used in theme customizer to the new lib variables
+$font-size-default:                                 $font-base-size;
+$font-color-default:                                $font-base-color;
+$border-color-default:                              #efefef;
+$font-color-header:				                    $font-color-headers;
+
+// Form Label  
+$form-label-color:                      $font-color-headers;        
+$form-label-size:                       1.1rem;        
+$form-label-weight:                     700;             
+
+// Form Input dimensions
+$form-input-height:                     auto;
+$form-input-padding-y:                  8px;
+$form-input-padding-x:                  10px;
+$form-input-font-size:                  $form-label-size;
+$form-input-border-radius:              4px;
+
+// Form Input styling
+$form-input-bg:                         #FFF;
+$form-input-bg-focus:                   #FFF;
+$form-input-bg-disabled:                $gray-lighter;
+$form-input-color:                      $font-color-default;
+$form-input-focus-color:                $form-input-color;
+$form-input-disabled-color:             $form-input-color;
+$form-input-placeholder-color:          $gray-light;
+$form-input-border-color:               #CCCCCC;
+$form-input-border-focus-color:         $brand-primary;
+
+$alert-info-bg:                         $brand-info;
+$alert-success-bg:                      $brand-success;
+$alert-warning-bg:                      $brand-warning;
+$alert-danger-bg:                       $brand-danger;
+
+// Text Color
+$alert-info-color:                      #fff;
+$alert-success-color:                   #fff;
+$alert-warning-color:                   #fff;
+$alert-danger-color:                    #fff;
+
+// Form Input Static styling
+$form-input-static-border-color:		#F0F0EE;
+
+// Form Group
+$form-group-margin-bottom:              30px;
+$form-group-gutter:                     15px;
+
+$screen-xs:                             480px;
+
+// Small screen / tablet Deprecated `$screen-sm` as of v3.0.1
+$screen-sm:                             768px;
+
+// Medium screen / desktop Deprecated `$screen-md` as of v3.0.1
+$screen-md:                             992px;
+
+// Large screen / wide desktop Deprecated `$screen-lg` as of v3.0.1
+$screen-lg:                             1200px;

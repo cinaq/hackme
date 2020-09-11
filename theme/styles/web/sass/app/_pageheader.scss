@@ -1,0 +1,34 @@
+.pageheader {
+    border-bottom: 0;
+}
+
+// Check if it is part of a inner layoutgrid
+.mx-scrollcontainer .mx-placeholder .mx-layoutgrid .pageheader {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 0;
+    background: transparent;
+}
+
+.pageheader-title {
+    line-height: 1.1875;
+}
+
+.pageheader-subtitle {
+    line-height: 1.153;
+    letter-spacing: -.1px;
+}
+
+.mx-scrollcontainer .mx-placeholder .mx-layoutgrid .pageheader.pageheaderwithcontrols {
+    margin-bottom: 80px;
+    margin-top: 30px;
+}
+
+.pageheaderwithcontrols {
+    .btn {
+        @media (max-width: $screen-xs) {
+            margin-top: 15px;
+            flex: 0 0 100%;
+        }
+    }
+}

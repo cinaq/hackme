@@ -1,0 +1,82 @@
+/* ==========================================================================
+   Groupbox
+
+   Default Mendix Groupboxes
+========================================================================== */
+
+.mx-groupbox {
+    margin: 0;
+
+    >.mx-groupbox-header {
+        margin: 0;
+        padding: 30px 0 20px;
+        color: $font-color-header;
+        border-width: 0;
+        border-style: solid;
+        border-color: transparent;
+        background: transparent;
+        font-size: $font-size-h1;
+        border-radius: 0;
+
+        .mx-groupbox-collapse-icon {
+            transition: transform 1s ease;
+            font-size: 22px;
+            margin-right: 5px;
+            margin-top: 10px;
+
+            &.glyphicon-plus {
+                font-family: fontawesome;
+
+                &:before {
+                    content: "\f054";
+                }
+            }
+
+            &.glyphicon-minus {
+                font-family: fontawesome;
+                transform: rotateZ(90deg);
+
+                &:before {
+                    content: "\f054";
+                }
+            }
+        }
+    }
+
+    >.mx-groupbox-body {
+        padding: 30px;
+        border: 0;
+        background: transparent;
+    }
+
+    .mx-groupbox-header+.mx-groupbox-body {
+        border-top: none;
+    }
+
+    &.collapsed>.mx-groupbox-header {
+        border-radius: 0;
+        background: transparent;
+
+    }
+}
+
+.groupbox-slide.mx-groupbox {
+    >.mx-groupbox-body {
+        padding: 0;
+        max-height: 2000px;
+        overflow: hidden;
+        transition: max-height 1s ease;
+
+        >.mx-layoutgrid {
+            padding: 30px;
+            border: 1px solid #efefef;
+            border-radius: 4px;
+            background: #fff;
+        }
+    }
+
+    &.collapsed>.mx-groupbox-body {
+        display: block !important;
+        max-height: 0;
+    }
+}

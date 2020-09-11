@@ -1,0 +1,66 @@
+.o-visible {
+    overflow: visible !important;
+}
+
+.o-hidden {
+    overflow: hidden !important;
+}
+
+.shadow {
+    box-shadow: 0 6px 15px rgba(36, 37, 38, 0.08);
+
+    &:hover {
+        box-shadow: 5px 12px 20px rgba(36, 37, 38, 0.13);
+    }
+}
+
+.border-right {
+    border-right: 1px solid $border-color-default;
+}
+
+.border-left {
+    border-left: 1px solid $border-color-default;
+}
+
+.border-top {
+    border-top: 1px solid $border-color-default;
+}
+
+.border-bottom {
+    border-bottom: 1px solid $border-color-default;
+}
+
+.no-gutter {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.separator-line {
+    margin-bottom: 30px;
+    margin-left: -30px;
+    margin-right: -30px;
+}
+
+.bg-transparent {
+    background: transparent !important;
+}
+
+.self-center {
+    align-self: center !important;
+}
+
+.self-start {
+    align-self: flex-start !important;
+}
+
+.self-end {
+    align-self: flex-end !important;
+}
+
+.underline {
+    text-decoration: underline;
+}

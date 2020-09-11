@@ -1,0 +1,33 @@
+.listview-timeentries.mx-listview {
+    ul {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        margin-left: -7.5px;
+        margin-right: -7.5px;
+
+        @media (min-width: 992px) {
+            flex-direction: row;
+        }
+
+        li {
+            flex: 0 1 100%;
+            max-width: 375px;
+            margin-bottom: 15px;
+            padding-left: 7.5px;
+            padding-right: 7.5px;
+
+            @media (max-width: $screen-sm) {
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+.listview-daystimeline {
+    >ul {
+        >li {
+            margin-bottom: 30px;
+        }
+    }
+}

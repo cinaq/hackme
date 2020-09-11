@@ -1,0 +1,110 @@
+.card.cardtimeentry {
+    padding: 0px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border-top: 5px solid $brand-default;
+
+    &[cssselectorhelper="Approved"] {
+        border-top: 5px solid $brand-success;
+    }
+
+    &[cssselectorhelper="Declined"] {
+        border-top: 5px solid $brand-danger;
+    }
+
+    .btn {
+        height: 37px;
+        font-size: 1rem;
+    }
+
+    .badge {
+        margin: 3px 0;
+    }
+}
+
+.card-entryheader, .card-userheader {
+    padding: 20px;
+}
+
+
+.card-entrydetails {
+    border-top: 1px solid $border-color-default;
+    border-bottom: 1px solid $border-color-default;
+}
+
+.card-entrydetailtitle {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    white-space: nowrap;
+}
+
+.card-entryactions {
+    padding: 15px 20px;
+}
+
+.card {
+    padding-bottom: 0;
+    margin-bottom: 30px;
+
+    .mx-dataview-controls {
+        padding: 15px 0;
+    }
+}
+
+.cardnewentry {
+    padding: 20px 20px;
+    border-radius: 12px;
+    background: #fff;
+    border: 0;
+    box-shadow: 5px 12px 20px rgba(36, 37, 38, 0.13);
+
+    .flexcontainer {
+        flex-wrap: wrap;
+
+        .flexitem:first-child {
+            @media (max-width: $screen-sm) {
+                display: none;
+            }
+        }
+
+        .flexitem:last-child {
+            @media (max-width: $screen-sm) {
+                margin-top: 15px;
+                width: 100%;
+
+                .btn {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .form-control {
+        background: #fff;
+        color: #000;
+
+        &::-webkit-input-placeholder {
+            color: #333;
+        }
+    }
+}
+
+.card.card-notification {
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.card.carduser {
+    padding: 0px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 15px;
+
+    .btn {
+        height: 37px;
+        font-size: 1rem;
+    }
+}

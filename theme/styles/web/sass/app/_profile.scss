@@ -1,0 +1,33 @@
+.profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    height: 260px;
+}
+
+.profile-title {
+    margin-top: 20px;
+}
+
+.profile-img-bg {
+    background: #fff;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    margin: 0 auto;
+    padding-top: 4px;
+
+    img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+    }
+}
+
+.profile-sm {
+    padding-top: 1px;
+    height: 30px;
+    width: 30px;
+
+}

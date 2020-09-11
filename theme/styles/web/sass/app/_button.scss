@@ -1,0 +1,106 @@
+.btn-rounded {
+    border-radius: 44px;
+}
+
+.btn-shadow {
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+        box-shadow: 0px 12px 18px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.mx-link {
+    font-size: 1.15em;
+}
+
+.btn {
+    font-size: 1.1rem;
+    padding: 0 20px;
+    height: 44px;
+}
+
+.btn-sm {
+    height: 38px;
+    padding: 0 15px;
+    font-size: 1rem;
+}
+
+.form-btn-inline {
+    margin-top: 35px;
+}
+
+.toggle-btn {
+    color: #fff;
+
+    a, &:before, &:after {
+        content: "";
+        background-color: #FFF;
+        height: 2px;
+        width: 32px;
+        display: block;
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+    &:before {
+        margin-top: 4px;
+    }
+
+    &:after {
+        margin-bottom: 0px;
+    }
+}
+
+.topbar-dropdown {
+    color: #fff;
+    font-size: 1rem;
+
+    >a {
+        text-decoration: none;
+    }
+}
+
+.mx-dropdown.modal-dialog {
+    right: 15px !important;
+    left: auto !important;
+    top: 60px !important;
+    width: 210px !important;
+
+    .modal-content {
+        border: 0;
+        border-radius: 6px;
+        background: #0A1223;
+        box-shadow: 5px 12px 20px rgba(36, 37, 38, 0.13);
+    }
+
+    .modal-header, .modal-footer {
+        display: none;
+    }
+
+    .modal-body {
+        padding: 0;
+
+        .mx-dropdown-list {
+            margin: 0;
+
+            >li {
+                padding: 10px 15px;
+                background: transparent;
+                border: 0;
+
+                >label {
+                    color: rgba(255, 255, 255, 0.8);
+                }
+
+                &:hover {
+                    background: darken(#0A1223, 5%);
+
+                    >label {
+                        color: rgba(255, 255, 255, 1);
+                    }
+                }
+            }
+        }
+    }
+}

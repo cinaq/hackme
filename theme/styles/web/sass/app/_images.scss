@@ -1,0 +1,34 @@
+img.img-profile,
+.img-profile img {
+    height: 72px;
+    width: 72px;
+    object-fit: cover;
+    object-position: center center;
+    background: #fff;
+}
+
+img.img-shadow,
+.img-shadow img {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+}
+
+img.img-border,
+.img-border img {
+    border: 5px solid #fff;
+}
+
+img.img-sm,
+.img-sm img {
+    height: 28px;
+    width: 28px;
+    object-fit: cover;
+    object-position: center center;
+}
+
+img.img-md,
+.img-md img {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    object-position: center center;
+}

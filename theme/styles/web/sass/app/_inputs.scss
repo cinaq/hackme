@@ -1,0 +1,127 @@
+.control-label {
+    margin-bottom: 15px;
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.mx-datepicker {
+    .mx-button {
+        color: $brand-primary;
+        border-color: $brand-primary;
+        font-size: 1.6rem;
+        height: 44px;
+        width: 44px;
+        padding: 0;
+        background: #fff;
+    }
+}
+
+.form-btn-group {
+    .btn {
+        margin-right: 15px;
+        padding: 0 30px;
+        height: 44px;
+    }
+}
+
+.textbox-sm {
+    .form-control {
+        max-width: 100px;
+    }
+}
+
+.textbox-center {
+    .form-control {
+        text-align: center;
+    }
+}
+
+.widget-slider {
+    padding: 0 18px;
+    overflow: visible;
+
+    .rc-slider {
+        height: 10px;
+
+        .rc-slider-rail {
+            background-color: #CCCCCC;
+            height: 10px;
+        }
+
+        .rc-slider-track {
+            height: 10px;
+        }
+
+        .rc-slider-handle {
+            height: 36px;
+            width: 36px;
+            margin-left: -18px;
+            margin-top: -14px;
+        }
+    }
+}
+
+.form-control {
+    min-height: 44px;
+    padding: 0 15px;
+    width: 100%;
+}
+
+textarea.form-control {
+    padding: 15px;
+}
+
+.dummy-input {
+    display: none;
+}
+
+.form-control-lg {
+    .form-control {
+        border: 0;
+        font-size: $font-size-h3;
+        padding: 0;
+        font-weight: 100;
+    }
+}
+
+.widget-switch-label {
+    display: block;
+    width: 100%;
+    min-height: 37px;
+
+    .form-group {
+        margin-right: -15px;
+        margin-left: -15px;
+
+        .control-label {
+            float: none;
+        }
+
+        .widget-switch {
+            float: none;
+        }
+    }
+}
+
+.form-group.form-slider-group {
+    position: relative;
+    flex-direction: column;
+
+    .widget-slider {
+        margin-top: 10px;
+    }
+
+    .has-error {
+        margin-bottom: 65px;
+
+        .mx-validation-message {
+            width: 100%;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+        }
+    }
+}
