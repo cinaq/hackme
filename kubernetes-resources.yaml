@@ -1,0 +1,71 @@
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackme
+  labels:
+    app: hackme
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackme
+  template:
+    metadata:
+      labels:
+        app: hackme
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: app
+        image: registry.cinaq.com/hackme:latest
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+        livenessProbe:
+          exec:
+            command:
+              - bin/sh
+              - -c
+              - "end=$(date -u +%s);start=$(stat -c %Z /proc/1 | awk '{print int($1)}'); test $(($end-$start)) -lt 86400"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: hackme
+spec:
+  selector:
+    app: hackme
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hackme-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+spec:
+  tls:
+  - hosts:
+    - hackme.demo.cinaq.com
+    secretName: com-cinaq-demo-hackme-tls
+  rules:
+  - host: hackme.demo.cinaq.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: hackme
+          servicePort: 8000

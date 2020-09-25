@@ -1,0 +1,116 @@
+resources:
+- name: hackme.git
+  type: git
+  icon: github
+  source:
+    uri: git@github.com:cinaq/hackme.git
+    branch: master
+    private_key: ((global.githubPrivateKey))
+- name: hackme-docker-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: ((global.registry))/hackme
+    username: ((global.registryUsername))
+    password: ((global.registryPassword))
+
+jobs:
+- name: build-and-push
+  plan:
+  - get: hackme.git
+  - task: version
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: alpine
+      inputs:
+      - name: hackme.git
+      outputs:
+      - name: version
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          BASE=$(cat hackme.git/version || echo "0.0.0-rc")
+          COMMIT=$(cat hackme.git/.git/ref | cut -c1-5)
+          VERSION="$BASE-$COMMIT"
+          echo $VERSION > version/tag
+  - task: build-task-image
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: vito/oci-build-task
+      inputs:
+      - name: hackme.git
+      outputs:
+      - name: image
+      caches:
+      - path: cache
+      run:
+        path: build
+      params:
+        CONTEXT: hackme.git
+  - put: hackme-docker-image
+    params:
+      image: image/image.tar
+      additional_tags: version/tag
+- name: deploy
+  public: false
+  plan:
+  - get: hackme-docker-image
+    trigger: true
+    passed:
+      - "build-and-push"
+  - get: hackme.git
+  - task: version
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: alpine
+      inputs:
+      - name: hackme.git
+      outputs:
+      - name: version
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          BASE=$(cat hackme.git/version || echo "0.0.0-rc")
+          COMMIT=$(cat hackme.git/.git/ref | cut -c1-5)
+          VERSION="$BASE-$COMMIT"
+          echo $VERSION > version/tag
+  - task: recreate-pod
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: alpine/k8s
+          tag: 1.13.12
+      params:
+        KUBECONFIG_DATA: ((global.kubeconfig))
+      inputs:
+      - name: version
+      outputs:
+      - name: deployment
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          mkdir -p ~/.kube
+          echo "$KUBECONFIG_DATA" > ~/.kube/config
+          VERSION=$(cat version/tag)
+          kubectl set image -n hackme deployment/hackme app=registry.cinaq.com/hackme:$VERSION > deployment/stdout
+          kubectl rollout status -n hackme deploy/hackme
+
