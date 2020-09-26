@@ -18,6 +18,7 @@ jobs:
 - name: build-and-push
   plan:
   - get: hackme.git
+    trigger: true
   - task: version
     config:
       platform: linux
