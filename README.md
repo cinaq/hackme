@@ -14,4 +14,18 @@ There are three ways you can use this project:
 
 We are always looking to educate each other and create awareness for security. You can contribute by promoting this awareness or help create more scenario’s.
 
-## Security
+## Live environment
+
+We have a live environment for you to play with which gets reset every 24 hours. It's accessible at:
+
+[hackme.demo.cinaq.com](https://hackme.demo.cinaq.com)
+
+Feel free to hack inside the app.
+
+## Test users
+
+- requestor_rachel
+- requestor_ryan
+- approver_adam
+- approver_ashley
+Default password: Demo1234@@
