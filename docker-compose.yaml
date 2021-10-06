@@ -1,0 +1,35 @@
+version: '3.3'
+
+services:
+   minio:
+     image: bitnami/minio:latest
+     restart: always
+     ports:
+      - '9000:9000'
+      - '9001:9001'
+     environment:
+      MINIO_ACCESS_KEY: minio-access-key
+      MINIO_SECRET_KEY: minio-secret-key
+   db:
+     image: postgres:12
+     restart: always
+     environment:
+       POSTGRES_USER: mendix
+       POSTGRES_PASSWORD: mendix
+       POSTGRES_DB: mendix
+
+   app:
+     restart: always
+     depends_on:
+       - db
+     build: .
+     image: hackme:latest
+     environment:
+       DATABASE_ENDPOINT: postgres://mendix:mendix@db:5432/mendix
+       METRICS_SERVICE_ENABLED: "true"
+       MXRUNTIME_com.mendix.storage.s3.AccessKeyId: minio-access-key
+       MXRUNTIME_com.mendix.storage.s3.SecretAccessKey: minio-secret-key
+       MXRUNTIME_com.mendix.storage.s3.EndPoint: http://minio:9000
+     ports:
+       - "8080:8080"
+       - "8083:8083"
