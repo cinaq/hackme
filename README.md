@@ -12,7 +12,7 @@ There are three ways you can use this project:
 
 ## Contribution
 
-We are always looking to educate each other and create awareness for security. You can contribute by promoting this awareness or help create more scenario’s.
+We are always looking to educate each other and create awareness for security. You can contribute by promoting this awareness or help create more scenarios.
 
 ## Live environment
 
