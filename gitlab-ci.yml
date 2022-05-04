@@ -28,7 +28,7 @@ sigridcipublish:
   variables:
     SIGRID_CI_PUBLISH: 'publishonly'
   image: 
-    name: 214775410005.dkr.ecr.eu-central-1.amazonaws.com/mendixpreprocessor:lates
+    name: 214775410005.dkr.ecr.eu-central-1.amazonaws.com/mendixpreprocessor:latest
   stage: report
   script: 
     - ""
