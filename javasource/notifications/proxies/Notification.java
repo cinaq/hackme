@@ -27,7 +27,7 @@ public class Notification
 		To("Notifications.To"),
 		From("Notifications.From");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -43,15 +43,17 @@ public class Notification
 
 	public Notification(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "Notifications.Notification"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected Notification(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject notificationMendixObject)
 	{
-		if (notificationMendixObject == null)
+		if (notificationMendixObject == null) {
 			throw new java.lang.IllegalArgumentException("The given object cannot be null.");
-		if (!com.mendix.core.Core.isSubClassOf("Notifications.Notification", notificationMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a Notifications.Notification");
+		}
+		if (!com.mendix.core.Core.isSubClassOf(entityName, notificationMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 
 		this.notificationMendixObject = notificationMendixObject;
 		this.context = context;
@@ -69,6 +71,9 @@ public class Notification
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static notifications.proxies.Notification initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -83,14 +88,16 @@ public class Notification
 
 	public static java.util.List<notifications.proxies.Notification> load(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String xpathConstraint) throws com.mendix.core.CoreException
 	{
-		java.util.List<notifications.proxies.Notification> result = new java.util.ArrayList<notifications.proxies.Notification>();
-		for (com.mendix.systemwideinterfaces.core.IMendixObject obj : com.mendix.core.Core.retrieveXPathQuery(context, "//Notifications.Notification" + xpathConstraint))
-			result.add(notifications.proxies.Notification.initialize(context, obj));
-		return result;
+		return com.mendix.core.Core.createXPathQuery(String.format("//%1$s%2$s", entityName, xpathConstraint))
+			.execute(context)
+			.stream()
+			.map(obj -> notifications.proxies.Notification.initialize(context, obj))
+			.collect(java.util.stream.Collectors.toList());
 	}
 
 	/**
 	 * Commit the changes made on this proxy object.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit() throws com.mendix.core.CoreException
 	{
@@ -99,6 +106,7 @@ public class Notification
 
 	/**
 	 * Commit the changes made on this proxy object using the specified context.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
@@ -265,6 +273,7 @@ public class Notification
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of To
 	 */
 	public final timesheet.proxies.MendixSSOUser getTo() throws com.mendix.core.CoreException
@@ -275,13 +284,15 @@ public class Notification
 	/**
 	 * @param context
 	 * @return value of To
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final timesheet.proxies.MendixSSOUser getTo(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		timesheet.proxies.MendixSSOUser result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.To.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = timesheet.proxies.MendixSSOUser.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -301,13 +312,15 @@ public class Notification
 	 */
 	public final void setTo(com.mendix.systemwideinterfaces.core.IContext context, timesheet.proxies.MendixSSOUser to)
 	{
-		if (to == null)
+		if (to == null) {
 			getMendixObject().setValue(context, MemberNames.To.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.To.toString(), to.getMendixObject().getId());
+		}
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of From
 	 */
 	public final timesheet.proxies.MendixSSOUser getFrom() throws com.mendix.core.CoreException
@@ -318,13 +331,15 @@ public class Notification
 	/**
 	 * @param context
 	 * @return value of From
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final timesheet.proxies.MendixSSOUser getFrom(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		timesheet.proxies.MendixSSOUser result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.From.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = timesheet.proxies.MendixSSOUser.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -344,10 +359,11 @@ public class Notification
 	 */
 	public final void setFrom(com.mendix.systemwideinterfaces.core.IContext context, timesheet.proxies.MendixSSOUser from)
 	{
-		if (from == null)
+		if (from == null) {
 			getMendixObject().setValue(context, MemberNames.From.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.From.toString(), from.getMendixObject().getId());
+		}
 	}
 
 	/**
@@ -369,9 +385,9 @@ public class Notification
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final notifications.proxies.Notification that = (notifications.proxies.Notification) obj;
@@ -391,7 +407,7 @@ public class Notification
 	 */
 	public static java.lang.String getType()
 	{
-		return "Notifications.Notification";
+		return entityName;
 	}
 
 	/**

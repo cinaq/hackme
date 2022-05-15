@@ -61,6 +61,7 @@ public class DecryptString extends CustomJavaAction<java.lang.String>
 
 	/**
 	 * Returns a string representation of this action
+	 * @return a string representation of this action
 	 */
 	@java.lang.Override
 	public java.lang.String toString()
@@ -82,12 +83,10 @@ public class DecryptString extends CustomJavaAction<java.lang.String>
         Cipher c = Cipher.getInstance("AES/GCM/PKCS5PADDING");
         SecretKeySpec k = new SecretKeySpec(this.key.getBytes(), "AES");
 
-        byte[] iv = Base64.getDecoder().decode(s[0].getBytes());
-        byte[] encryptedData = Base64.getDecoder().decode(s[1].getBytes());
-
         try {
-            GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
+            GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, Base64.getDecoder().decode(s[0]));
             c.init(Cipher.DECRYPT_MODE, k, spec);
+            byte[] encryptedData = Base64.getDecoder().decode(s[1]);
             return new String(c.doFinal(encryptedData));
         } catch (InvalidAlgorithmParameterException | BadPaddingException ex) {
             if (isEncryptedWithWrongKey(ex.getMessage()))
@@ -111,11 +110,9 @@ public class DecryptString extends CustomJavaAction<java.lang.String>
         Cipher c = Cipher.getInstance("AES/CBC/PKCS5PADDING");
         SecretKeySpec k = new SecretKeySpec(this.key.getBytes(), "AES");
 
-        byte[] iv = Base64.getDecoder().decode(s[0].getBytes());
-        byte[] encryptedData = Base64.getDecoder().decode(s[1].getBytes());
-
         try {
-            c.init(Cipher.DECRYPT_MODE, k, new IvParameterSpec(iv));
+            c.init(Cipher.DECRYPT_MODE, k, new IvParameterSpec(Base64.getDecoder().decode(s[0])));
+            byte[] encryptedData = Base64.getDecoder().decode(s[1]);
             return new String(c.doFinal(encryptedData));
         } catch (InvalidAlgorithmParameterException | BadPaddingException ex) {
             if (isEncryptedWithWrongKey(ex.getMessage()))

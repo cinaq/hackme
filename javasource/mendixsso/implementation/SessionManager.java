@@ -5,6 +5,7 @@ import com.mendix.core.CoreException;
 import com.mendix.logging.ILogNode;
 import com.mendix.m2ee.api.IMxRuntimeRequest;
 import com.mendix.m2ee.api.IMxRuntimeResponse;
+import com.mendix.systemwideinterfaces.MendixRuntimeException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.ISession;
 import com.mendix.systemwideinterfaces.core.IUser;
@@ -19,9 +20,7 @@ import mendixsso.proxies.PlatformSession;
 import system.proxies.Session;
 import system.proxies.User;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static mendixsso.proxies.constants.Constants.getLogNode;
 
@@ -42,21 +41,22 @@ public class SessionManager {
         LOG.info("User " + user.getName() + " authenticated. Starting session..");
 
         final IUser iUser = Core.getUser(context, user.getName());
-        final ISession session = Core.initializeSession(iUser, null);
+        final ISession iSession = Core.initializeSession(iUser, null);
 
-        final JWTClaimsSet idTokenClaimsSet = TokenUtils.persistTokens(context, oidcTokenResponse, user, session);
+        final JWTClaimsSet idTokenClaimsSet = TokenUtils.persistTokens(context, oidcTokenResponse, user, iSession);
         if (idTokenClaimsSet != null) {
             final String sid = idTokenClaimsSet.getStringClaim(SID_CLAIM_NAME);
             if (sid != null) {
-                createPlatformSession(context, session, sid);
+                final Session session = Session.initialize(context, iSession.getMendixObject());
+                associateSessionToPlatformSession(context, sid, session);
             }
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Created session, fingerprint: " + OpenIDUtils.getFingerPrint(session));
+            LOG.debug("Created session, fingerprint: " + OpenIDUtils.getFingerPrint(iSession));
         }
 
-        writeSessionCookies(session, resp);
+        writeSessionCookies(iSession, resp);
     }
 
     public static void writeSessionCookies(ISession session,
@@ -66,46 +66,54 @@ public class SessionManager {
     }
 
     public static void logoutAllSessionsOfForeignIdentity(IContext context, String foreignIdentityUUID) {
-        final List<Session> sessions = retrieveSessions(context, foreignIdentityUUID);
-        sessions.forEach(SessionManager::logoutSession);
+        retrieveSessions(context, foreignIdentityUUID).forEach(SessionManager::logoutSession);
     }
 
-    public static void logoutSession(IContext context, String platformSessionId) throws CoreException {
-        final PlatformSession platformSession = retrievePlatformSession(context, platformSessionId);
-        if (platformSession != null) {
-            logoutSession(platformSession.getPlatformSession_Session());
+    public static void logoutSession(IContext context, String platformSessionId) {
+        retrievePlatformSessions(context, platformSessionId).forEach(SessionManager::logoutPlatformSession);
+    }
+
+    private static void logoutPlatformSession(PlatformSession platformSession) {
+        try {
+            Optional.ofNullable(platformSession.getPlatformSession_Session())
+                    .ifPresent(SessionManager::logoutSession);
+        } catch (CoreException e) {
+            throw new MendixRuntimeException(e);
         }
     }
 
     private static void logoutSession(Session sessionObject) {
-        if (sessionObject != null) {
-            final ISession session = Core.getSessionById(UUID.fromString(sessionObject.getSessionId()));
-            Core.logout(session);
-        }
+        final ISession session = Core.getSessionById(UUID.fromString(sessionObject.getSessionId()));
+        Core.logout(session);
     }
 
-    private static PlatformSession retrievePlatformSession(IContext context, String platformSessionId) {
-        return MendixUtils.retrieveSingleObjectFromDatabase(context, PlatformSession.class, "//%s[%s = $platformSessionId]",
-                new HashMap<String, Object>() {{
-                    put("platformSessionId", platformSessionId);
-                }},
+    private static void associateSessionToPlatformSession(IContext context, String sid, Session session) throws CoreException {
+        final PlatformSession platformSession =  retrievePlatformSessions(context, sid).stream()
+                .findAny().orElseGet(() -> createPlatformSession(context, sid));
+        platformSession.setSessionId(sid);
+        platformSession.setPlatformSession_Session(session);
+        platformSession.commit();
+    }
+
+    private static PlatformSession createPlatformSession(IContext context, String sid) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Creating new platform session for sid '" + sid + "'");
+        }
+        return new PlatformSession(context);
+    }
+
+
+    private static List<PlatformSession> retrievePlatformSessions(IContext context, String platformSessionId) {
+        return MendixUtils.retrieveFromDatabase(context, PlatformSession.class, "//%s[%s = $platformSessionId]",
+                Map.of("platformSessionId", platformSessionId),
                 PlatformSession.entityName,
                 PlatformSession.MemberNames.SessionId.toString()
         );
     }
 
-    private static void createPlatformSession(IContext context, ISession session, String sid) throws CoreException {
-        final PlatformSession platformSession = new PlatformSession(context);
-        platformSession.setSessionId(sid);
-        platformSession.setPlatformSession_Session(Session.initialize(context, session.getMendixObject()));
-        platformSession.commit();
-    }
-
     private static List<Session> retrieveSessions(IContext context, String foreignIdentityUUID) {
         return MendixUtils.retrieveFromDatabase(context, Session.class, "//%s[%s/%s/%s/%s/%s = $uuid]",
-                new HashMap<String, Object>() {{
-                    put("uuid", foreignIdentityUUID);
-                }},
+                Map.of("uuid", foreignIdentityUUID),
                 Session.entityName,
                 Session.MemberNames.Session_User.toString(),
                 User.entityName,

@@ -33,7 +33,7 @@ public class Submission
 		RequestedBy("Timesheet.RequestedBy"),
 		ReviewedBy("Timesheet.ReviewedBy");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -49,15 +49,17 @@ public class Submission
 
 	public Submission(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "Timesheet.Submission"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected Submission(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject submissionMendixObject)
 	{
-		if (submissionMendixObject == null)
+		if (submissionMendixObject == null) {
 			throw new java.lang.IllegalArgumentException("The given object cannot be null.");
-		if (!com.mendix.core.Core.isSubClassOf("Timesheet.Submission", submissionMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a Timesheet.Submission");
+		}
+		if (!com.mendix.core.Core.isSubClassOf(entityName, submissionMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 
 		this.submissionMendixObject = submissionMendixObject;
 		this.context = context;
@@ -75,6 +77,9 @@ public class Submission
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static timesheet.proxies.Submission initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -89,14 +94,16 @@ public class Submission
 
 	public static java.util.List<timesheet.proxies.Submission> load(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String xpathConstraint) throws com.mendix.core.CoreException
 	{
-		java.util.List<timesheet.proxies.Submission> result = new java.util.ArrayList<timesheet.proxies.Submission>();
-		for (com.mendix.systemwideinterfaces.core.IMendixObject obj : com.mendix.core.Core.retrieveXPathQuery(context, "//Timesheet.Submission" + xpathConstraint))
-			result.add(timesheet.proxies.Submission.initialize(context, obj));
-		return result;
+		return com.mendix.core.Core.createXPathQuery(String.format("//%1$s%2$s", entityName, xpathConstraint))
+			.execute(context)
+			.stream()
+			.map(obj -> timesheet.proxies.Submission.initialize(context, obj))
+			.collect(java.util.stream.Collectors.toList());
 	}
 
 	/**
 	 * Commit the changes made on this proxy object.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit() throws com.mendix.core.CoreException
 	{
@@ -105,6 +112,7 @@ public class Submission
 
 	/**
 	 * Commit the changes made on this proxy object using the specified context.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
@@ -358,9 +366,9 @@ public class Submission
 	public final timesheet.proxies.Status getStatus(com.mendix.systemwideinterfaces.core.IContext context)
 	{
 		Object obj = getMendixObject().getValue(context, MemberNames.Status.toString());
-		if (obj == null)
+		if (obj == null) {
 			return null;
-
+		}
 		return timesheet.proxies.Status.valueOf((java.lang.String) obj);
 	}
 
@@ -380,10 +388,11 @@ public class Submission
 	 */
 	public final void setStatus(com.mendix.systemwideinterfaces.core.IContext context, timesheet.proxies.Status status)
 	{
-		if (status != null)
+		if (status != null) {
 			getMendixObject().setValue(context, MemberNames.Status.toString(), status.toString());
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.Status.toString(), null);
+		}
 	}
 
 	/**
@@ -402,9 +411,9 @@ public class Submission
 	public final timesheet.proxies._Type get_Type(com.mendix.systemwideinterfaces.core.IContext context)
 	{
 		Object obj = getMendixObject().getValue(context, MemberNames._Type.toString());
-		if (obj == null)
+		if (obj == null) {
 			return null;
-
+		}
 		return timesheet.proxies._Type.valueOf((java.lang.String) obj);
 	}
 
@@ -424,10 +433,11 @@ public class Submission
 	 */
 	public final void set_Type(com.mendix.systemwideinterfaces.core.IContext context, timesheet.proxies._Type _type)
 	{
-		if (_type != null)
+		if (_type != null) {
 			getMendixObject().setValue(context, MemberNames._Type.toString(), _type.toString());
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames._Type.toString(), null);
+		}
 	}
 
 	/**
@@ -503,6 +513,7 @@ public class Submission
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of RequestedBy
 	 */
 	public final timesheet.proxies.MendixSSOUser getRequestedBy() throws com.mendix.core.CoreException
@@ -513,13 +524,15 @@ public class Submission
 	/**
 	 * @param context
 	 * @return value of RequestedBy
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final timesheet.proxies.MendixSSOUser getRequestedBy(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		timesheet.proxies.MendixSSOUser result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.RequestedBy.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = timesheet.proxies.MendixSSOUser.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -539,13 +552,15 @@ public class Submission
 	 */
 	public final void setRequestedBy(com.mendix.systemwideinterfaces.core.IContext context, timesheet.proxies.MendixSSOUser requestedby)
 	{
-		if (requestedby == null)
+		if (requestedby == null) {
 			getMendixObject().setValue(context, MemberNames.RequestedBy.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.RequestedBy.toString(), requestedby.getMendixObject().getId());
+		}
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of ReviewedBy
 	 */
 	public final timesheet.proxies.MendixSSOUser getReviewedBy() throws com.mendix.core.CoreException
@@ -556,13 +571,15 @@ public class Submission
 	/**
 	 * @param context
 	 * @return value of ReviewedBy
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final timesheet.proxies.MendixSSOUser getReviewedBy(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		timesheet.proxies.MendixSSOUser result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.ReviewedBy.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = timesheet.proxies.MendixSSOUser.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -582,10 +599,11 @@ public class Submission
 	 */
 	public final void setReviewedBy(com.mendix.systemwideinterfaces.core.IContext context, timesheet.proxies.MendixSSOUser reviewedby)
 	{
-		if (reviewedby == null)
+		if (reviewedby == null) {
 			getMendixObject().setValue(context, MemberNames.ReviewedBy.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.ReviewedBy.toString(), reviewedby.getMendixObject().getId());
+		}
 	}
 
 	/**
@@ -607,9 +625,9 @@ public class Submission
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final timesheet.proxies.Submission that = (timesheet.proxies.Submission) obj;
@@ -629,7 +647,7 @@ public class Submission
 	 */
 	public static java.lang.String getType()
 	{
-		return "Timesheet.Submission";
+		return entityName;
 	}
 
 	/**

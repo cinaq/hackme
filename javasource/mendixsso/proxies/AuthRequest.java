@@ -22,9 +22,10 @@ public class AuthRequest
 	{
 		State("State"),
 		Nonce("Nonce"),
-		Continuation("Continuation");
+		Continuation("Continuation"),
+		Prompt("Prompt");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -40,15 +41,17 @@ public class AuthRequest
 
 	public AuthRequest(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "MendixSSO.AuthRequest"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected AuthRequest(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject authRequestMendixObject)
 	{
-		if (authRequestMendixObject == null)
+		if (authRequestMendixObject == null) {
 			throw new java.lang.IllegalArgumentException("The given object cannot be null.");
-		if (!com.mendix.core.Core.isSubClassOf("MendixSSO.AuthRequest", authRequestMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a MendixSSO.AuthRequest");
+		}
+		if (!com.mendix.core.Core.isSubClassOf(entityName, authRequestMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 
 		this.authRequestMendixObject = authRequestMendixObject;
 		this.context = context;
@@ -66,6 +69,9 @@ public class AuthRequest
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static mendixsso.proxies.AuthRequest initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -80,14 +86,16 @@ public class AuthRequest
 
 	public static java.util.List<mendixsso.proxies.AuthRequest> load(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String xpathConstraint) throws com.mendix.core.CoreException
 	{
-		java.util.List<mendixsso.proxies.AuthRequest> result = new java.util.ArrayList<mendixsso.proxies.AuthRequest>();
-		for (com.mendix.systemwideinterfaces.core.IMendixObject obj : com.mendix.core.Core.retrieveXPathQuery(context, "//MendixSSO.AuthRequest" + xpathConstraint))
-			result.add(mendixsso.proxies.AuthRequest.initialize(context, obj));
-		return result;
+		return com.mendix.core.Core.createXPathQuery(String.format("//%1$s%2$s", entityName, xpathConstraint))
+			.execute(context)
+			.stream()
+			.map(obj -> mendixsso.proxies.AuthRequest.initialize(context, obj))
+			.collect(java.util.stream.Collectors.toList());
 	}
 
 	/**
 	 * Commit the changes made on this proxy object.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit() throws com.mendix.core.CoreException
 	{
@@ -96,6 +104,7 @@ public class AuthRequest
 
 	/**
 	 * Commit the changes made on this proxy object using the specified context.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
@@ -226,6 +235,42 @@ public class AuthRequest
 	}
 
 	/**
+	 * @return value of Prompt
+	 */
+	public final java.lang.String getPrompt()
+	{
+		return getPrompt(getContext());
+	}
+
+	/**
+	 * @param context
+	 * @return value of Prompt
+	 */
+	public final java.lang.String getPrompt(com.mendix.systemwideinterfaces.core.IContext context)
+	{
+		return (java.lang.String) getMendixObject().getValue(context, MemberNames.Prompt.toString());
+	}
+
+	/**
+	 * Set value of Prompt
+	 * @param prompt
+	 */
+	public final void setPrompt(java.lang.String prompt)
+	{
+		setPrompt(getContext(), prompt);
+	}
+
+	/**
+	 * Set value of Prompt
+	 * @param context
+	 * @param prompt
+	 */
+	public final void setPrompt(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String prompt)
+	{
+		getMendixObject().setValue(context, MemberNames.Prompt.toString(), prompt);
+	}
+
+	/**
 	 * @return the IMendixObject instance of this proxy for use in the Core interface.
 	 */
 	public final com.mendix.systemwideinterfaces.core.IMendixObject getMendixObject()
@@ -244,9 +289,9 @@ public class AuthRequest
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final mendixsso.proxies.AuthRequest that = (mendixsso.proxies.AuthRequest) obj;
@@ -266,7 +311,7 @@ public class AuthRequest
 	 */
 	public static java.lang.String getType()
 	{
-		return "MendixSSO.AuthRequest";
+		return entityName;
 	}
 
 	/**

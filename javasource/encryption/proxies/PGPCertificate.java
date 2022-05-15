@@ -32,7 +32,7 @@ public class PGPCertificate extends system.proxies.FileDocument
 		Size("Size"),
 		SecretKey_PublicKey("Encryption.SecretKey_PublicKey");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -48,14 +48,15 @@ public class PGPCertificate extends system.proxies.FileDocument
 
 	public PGPCertificate(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "Encryption.PGPCertificate"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected PGPCertificate(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject pGPCertificateMendixObject)
 	{
 		super(context, pGPCertificateMendixObject);
-		if (!com.mendix.core.Core.isSubClassOf("Encryption.PGPCertificate", pGPCertificateMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a Encryption.PGPCertificate");
+		if (!com.mendix.core.Core.isSubClassOf(entityName, pGPCertificateMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 	}
 
 	/**
@@ -70,6 +71,9 @@ public class PGPCertificate extends system.proxies.FileDocument
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static encryption.proxies.PGPCertificate initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -84,10 +88,11 @@ public class PGPCertificate extends system.proxies.FileDocument
 
 	public static java.util.List<encryption.proxies.PGPCertificate> load(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String xpathConstraint) throws com.mendix.core.CoreException
 	{
-		java.util.List<encryption.proxies.PGPCertificate> result = new java.util.ArrayList<encryption.proxies.PGPCertificate>();
-		for (com.mendix.systemwideinterfaces.core.IMendixObject obj : com.mendix.core.Core.retrieveXPathQuery(context, "//Encryption.PGPCertificate" + xpathConstraint))
-			result.add(encryption.proxies.PGPCertificate.initialize(context, obj));
-		return result;
+		return com.mendix.core.Core.createXPathQuery(String.format("//%1$s%2$s", entityName, xpathConstraint))
+			.execute(context)
+			.stream()
+			.map(obj -> encryption.proxies.PGPCertificate.initialize(context, obj))
+			.collect(java.util.stream.Collectors.toList());
 	}
 
 	/**
@@ -106,9 +111,9 @@ public class PGPCertificate extends system.proxies.FileDocument
 	public final encryption.proxies.CertificateType getCertificateType(com.mendix.systemwideinterfaces.core.IContext context)
 	{
 		Object obj = getMendixObject().getValue(context, MemberNames.CertificateType.toString());
-		if (obj == null)
+		if (obj == null) {
 			return null;
-
+		}
 		return encryption.proxies.CertificateType.valueOf((java.lang.String) obj);
 	}
 
@@ -128,10 +133,11 @@ public class PGPCertificate extends system.proxies.FileDocument
 	 */
 	public final void setCertificateType(com.mendix.systemwideinterfaces.core.IContext context, encryption.proxies.CertificateType certificatetype)
 	{
-		if (certificatetype != null)
+		if (certificatetype != null) {
 			getMendixObject().setValue(context, MemberNames.CertificateType.toString(), certificatetype.toString());
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.CertificateType.toString(), null);
+		}
 	}
 
 	/**
@@ -279,6 +285,7 @@ public class PGPCertificate extends system.proxies.FileDocument
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of SecretKey_PublicKey
 	 */
 	public final encryption.proxies.PGPCertificate getSecretKey_PublicKey() throws com.mendix.core.CoreException
@@ -289,13 +296,15 @@ public class PGPCertificate extends system.proxies.FileDocument
 	/**
 	 * @param context
 	 * @return value of SecretKey_PublicKey
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final encryption.proxies.PGPCertificate getSecretKey_PublicKey(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		encryption.proxies.PGPCertificate result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.SecretKey_PublicKey.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = encryption.proxies.PGPCertificate.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -315,18 +324,19 @@ public class PGPCertificate extends system.proxies.FileDocument
 	 */
 	public final void setSecretKey_PublicKey(com.mendix.systemwideinterfaces.core.IContext context, encryption.proxies.PGPCertificate secretkey_publickey)
 	{
-		if (secretkey_publickey == null)
+		if (secretkey_publickey == null) {
 			getMendixObject().setValue(context, MemberNames.SecretKey_PublicKey.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.SecretKey_PublicKey.toString(), secretkey_publickey.getMendixObject().getId());
+		}
 	}
 
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final encryption.proxies.PGPCertificate that = (encryption.proxies.PGPCertificate) obj;
@@ -346,7 +356,7 @@ public class PGPCertificate extends system.proxies.FileDocument
 	 */
 	public static java.lang.String getType()
 	{
-		return "Encryption.PGPCertificate";
+		return entityName;
 	}
 
 	/**

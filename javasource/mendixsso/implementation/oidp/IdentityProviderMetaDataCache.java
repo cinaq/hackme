@@ -7,6 +7,7 @@ import com.nimbusds.oauth2.sdk.ResponseType;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
+import mendixsso.implementation.ConfigurationManager;
 import mendixsso.implementation.utils.OpenIDUtils;
 import mendixsso.proxies.constants.Constants;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -36,7 +37,7 @@ public class IdentityProviderMetaDataCache {
     private static IdentityProviderMetaData loadConfiguration() throws IOException, ParseException {
 
         try {
-            final String discoveryUrl = OpenIDUtils.ensureEndsWithSlash(Constants.getOpenIdConnectProvider()) + Constants.getOpenIdConnectDiscoveryPath();
+            final String discoveryUrl = OpenIDUtils.ensureEndsWithSlash(ConfigurationManager.getInstance().getOpenIdConnectProvider()) + Constants.getOpenIdConnectDiscoveryPath();
 
             final URI providerConfigurationURL = new URI(discoveryUrl);
 
@@ -46,10 +47,9 @@ public class IdentityProviderMetaDataCache {
             }
 
             final OIDCProviderMetadata providerMetadata = OIDCProviderMetadata.parse(providerInfo);
+            final String decryptedClientSecret = ConfigurationManager.getInstance().getEnvironmentPassword();
 
-            final String decryptedClientSecret = Constants.getEnvironmentPassword();
-
-            final ClientID clientId = new ClientID(Constants.getEnvironmentUUID());
+            final ClientID clientId = new ClientID(ConfigurationManager.getInstance().getEnvironmentUUID());
 
             // set up the validator
             final IDTokenValidator idTokenValidator = new IDTokenValidator(
@@ -58,7 +58,7 @@ public class IdentityProviderMetaDataCache {
                     JWSAlgorithm.RS256,
                     providerMetadata.getJWKSetURI().toURL());
 
-            idTokenValidator.setMaxClockSkew(Constants.getTokenValidatorMaxClockSkew().intValue());
+            idTokenValidator.setMaxClockSkew(ConfigurationManager.getInstance().getTokenValidatorMaxClockSkew().intValue());
 
             Core.getLogger(getLogNode()).info("Cached identity provider meta data.");
 

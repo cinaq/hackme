@@ -48,17 +48,17 @@ public class UserMapper {
     }
 
     IMendixObject createUser(IContext context, UserProfile userProfile, String uuid) throws CoreException {
-        return Core.execute(context, this.createUserMicroflowName, new HashMap<String, Object>() {{
-            put("UserProfile", userProfile.getMendixObject());
-            put("UUID", uuid);
-        }});
+        return Core.microflowCall(this.createUserMicroflowName)
+                .withParam("UserProfile", userProfile.getMendixObject())
+                .withParam("UUID", uuid)
+                .execute(context);
     }
 
     void updateUser(IContext context, User user, UserProfile userProfile, String uuid) throws CoreException {
-        Core.execute(context, this.updateUserMicroflowName, new HashMap<String, Object>() {{
-            put("User", user.getMendixObject());
-            put("UserProfile", userProfile.getMendixObject());
-            put("UUID", uuid);
-        }});
+        Core.microflowCall(this.updateUserMicroflowName)
+                .withParam("User", user.getMendixObject())
+                .withParam("UserProfile", userProfile.getMendixObject())
+                .withParam("UUID", uuid)
+                .execute(context);
     }
 }
