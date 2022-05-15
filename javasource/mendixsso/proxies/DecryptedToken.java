@@ -28,7 +28,7 @@ public class DecryptedToken
 		DecryptedToken_User("MendixSSO.DecryptedToken_User"),
 		DecryptedToken_Session("MendixSSO.DecryptedToken_Session");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -44,15 +44,17 @@ public class DecryptedToken
 
 	public DecryptedToken(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "MendixSSO.DecryptedToken"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected DecryptedToken(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject decryptedTokenMendixObject)
 	{
-		if (decryptedTokenMendixObject == null)
+		if (decryptedTokenMendixObject == null) {
 			throw new java.lang.IllegalArgumentException("The given object cannot be null.");
-		if (!com.mendix.core.Core.isSubClassOf("MendixSSO.DecryptedToken", decryptedTokenMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a MendixSSO.DecryptedToken");
+		}
+		if (!com.mendix.core.Core.isSubClassOf(entityName, decryptedTokenMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 
 		this.decryptedTokenMendixObject = decryptedTokenMendixObject;
 		this.context = context;
@@ -70,6 +72,9 @@ public class DecryptedToken
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static mendixsso.proxies.DecryptedToken initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -84,6 +89,7 @@ public class DecryptedToken
 
 	/**
 	 * Commit the changes made on this proxy object.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit() throws com.mendix.core.CoreException
 	{
@@ -92,6 +98,7 @@ public class DecryptedToken
 
 	/**
 	 * Commit the changes made on this proxy object using the specified context.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
@@ -237,9 +244,9 @@ public class DecryptedToken
 	public final mendixsso.proxies.TokenType getTokenType(com.mendix.systemwideinterfaces.core.IContext context)
 	{
 		Object obj = getMendixObject().getValue(context, MemberNames.TokenType.toString());
-		if (obj == null)
+		if (obj == null) {
 			return null;
-
+		}
 		return mendixsso.proxies.TokenType.valueOf((java.lang.String) obj);
 	}
 
@@ -259,10 +266,11 @@ public class DecryptedToken
 	 */
 	public final void setTokenType(com.mendix.systemwideinterfaces.core.IContext context, mendixsso.proxies.TokenType tokentype)
 	{
-		if (tokentype != null)
+		if (tokentype != null) {
 			getMendixObject().setValue(context, MemberNames.TokenType.toString(), tokentype.toString());
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.TokenType.toString(), null);
+		}
 	}
 
 	/**
@@ -302,6 +310,7 @@ public class DecryptedToken
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of DecryptedToken_User
 	 */
 	public final system.proxies.User getDecryptedToken_User() throws com.mendix.core.CoreException
@@ -312,13 +321,15 @@ public class DecryptedToken
 	/**
 	 * @param context
 	 * @return value of DecryptedToken_User
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final system.proxies.User getDecryptedToken_User(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		system.proxies.User result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.DecryptedToken_User.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = system.proxies.User.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -338,13 +349,15 @@ public class DecryptedToken
 	 */
 	public final void setDecryptedToken_User(com.mendix.systemwideinterfaces.core.IContext context, system.proxies.User decryptedtoken_user)
 	{
-		if (decryptedtoken_user == null)
+		if (decryptedtoken_user == null) {
 			getMendixObject().setValue(context, MemberNames.DecryptedToken_User.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.DecryptedToken_User.toString(), decryptedtoken_user.getMendixObject().getId());
+		}
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of DecryptedToken_Session
 	 */
 	public final system.proxies.Session getDecryptedToken_Session() throws com.mendix.core.CoreException
@@ -355,13 +368,15 @@ public class DecryptedToken
 	/**
 	 * @param context
 	 * @return value of DecryptedToken_Session
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final system.proxies.Session getDecryptedToken_Session(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		system.proxies.Session result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.DecryptedToken_Session.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = system.proxies.Session.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -381,10 +396,11 @@ public class DecryptedToken
 	 */
 	public final void setDecryptedToken_Session(com.mendix.systemwideinterfaces.core.IContext context, system.proxies.Session decryptedtoken_session)
 	{
-		if (decryptedtoken_session == null)
+		if (decryptedtoken_session == null) {
 			getMendixObject().setValue(context, MemberNames.DecryptedToken_Session.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.DecryptedToken_Session.toString(), decryptedtoken_session.getMendixObject().getId());
+		}
 	}
 
 	/**
@@ -406,9 +422,9 @@ public class DecryptedToken
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final mendixsso.proxies.DecryptedToken that = (mendixsso.proxies.DecryptedToken) obj;
@@ -428,7 +444,7 @@ public class DecryptedToken
 	 */
 	public static java.lang.String getType()
 	{
-		return "MendixSSO.DecryptedToken";
+		return entityName;
 	}
 
 	/**

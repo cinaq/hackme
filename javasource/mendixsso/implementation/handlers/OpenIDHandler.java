@@ -22,6 +22,7 @@ import com.nimbusds.openid.connect.sdk.claims.LogoutTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.claims.SessionID;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
+import mendixsso.implementation.ConfigurationManager;
 import mendixsso.implementation.SessionManager;
 import mendixsso.implementation.UserMapper;
 import mendixsso.implementation.error.IncompatibleUserTypeException;
@@ -37,20 +38,21 @@ import system.proxies.User;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Optional;
 
 import static mendixsso.implementation.utils.OpenIDUtils.extractUUID;
 import static mendixsso.implementation.utils.OpenIDUtils.getFingerPrint;
-import static mendixsso.proxies.constants.Constants.getEnvironmentUUID;
 
 public class OpenIDHandler extends RequestHandler {
 
+
     public static final String OPENID_CLIENTSERVLET_LOCATION = "openid/";
-    public static final String INDEX_PAGE = Constants.getIndexPage();
+    public static final String INDEX_PAGE = ConfigurationManager.getInstance().getIndexPage();
     public static final String CALLBACK = "callback";
     private static final String LOGIN = "login";
     private static final String LOGOFF = "logoff";
     private static final String BACKCHANNEL_LOGOUT = "backchannel_logout";
-    private static final String OPENID_PROVIDER = Constants.getOpenIdConnectProvider();
+    private static final String OPENID_PROVIDER = ConfigurationManager.getInstance().getOpenIdConnectProvider();
     private static final boolean SSO_ENABLED = Constants.getSSOEnabled();
     private static final ILogNode LOG = Core.getLogger(Constants.getLogNode());
     private static final ILoginHandler loginHandler = new DefaultLoginHandler();
@@ -111,7 +113,6 @@ public class OpenIDHandler extends RequestHandler {
             redirect(resp, FALLBACK_LOGINPAGE);
             return;
         }
-
         try {
             if (LOGOFF.equalsIgnoreCase(path)) {
                 logoff(req, resp); //requesting Single Sign Off (from client)
@@ -145,31 +146,34 @@ public class OpenIDHandler extends RequestHandler {
 
         if (authResp instanceof AuthenticationErrorResponse) {
             final ErrorObject error = ((AuthenticationErrorResponse) authResp).getErrorObject();
-            throw new IllegalStateException(error.getDescription());
-        }
+            if (Prompt.Type.parse(originalRequest.getPrompt()).compareTo(Prompt.Type.LOGIN) == 0) {
+                throw new IllegalStateException(error.getDescription());
+            } else {
+                LOG.trace(String.format("Authentication callback error:", error.getDescription()));
+                OpenIDUtils.redirectToIndex(req, resp, originalRequest.getContinuation());
+            }
+        } else {
 
-        final AuthenticationSuccessResponse successResponse = (AuthenticationSuccessResponse) authResp;
+            final AuthenticationSuccessResponse successResponse = (AuthenticationSuccessResponse) authResp;
+            final Nonce expectedNonce = new Nonce(originalRequest.getNonce());
+            final AuthorizationCode authCode = successResponse.getAuthorizationCode();
 
-        final Nonce expectedNonce = new Nonce(originalRequest.getNonce());
-        final AuthorizationCode authCode = successResponse.getAuthorizationCode();
-
-        /*
-         * When an authorization code (using code or hybrid flow) has been
-         * obtained, a token request can made to get the access token and the id
-         * token:
-         */
-        final OIDCTokenResponse idTokenResponse = requestOIDCToken(req, authCode, state);
-
-        final JWT idToken = getAndValidateIDToken(idTokenResponse, expectedNonce);
-
-        final UserProfile userProfile = UserProfileUtils.getUserProfile(context, idToken.getJWTClaimsSet().toJSONObject());
-        // We assume that openId cannot be null since that would imply bigger issues higher up in the SSO stack.
-        final String uuid = extractUUID(userProfile.getOpenId());
-        ForeignIdentityUtils.lockForeignIdentity(uuid);
-        try {
-            loginHandler.onCompleteLogin(context, userProfile, idTokenResponse, originalRequest.getContinuation(), req, resp);
-        } finally {
-            ForeignIdentityUtils.unlockForeignIdentity(uuid);
+            /*
+             * When an authorization code (using code or hybrid flow) has been
+             * obtained, a token request can made to get the access token and the id
+             * token:
+             */
+            final OIDCTokenResponse idTokenResponse = requestOIDCToken(req, authCode, state);
+            final JWT idToken = getAndValidateIDToken(idTokenResponse, expectedNonce);
+            final UserProfile userProfile = UserProfileUtils.getUserProfile(context, idToken.getJWTClaimsSet().toJSONObject());
+            // We assume that openId cannot be null since that would imply bigger issues higher up in the SSO stack.
+            final String uuid = extractUUID(userProfile.getOpenId());
+            ForeignIdentityUtils.lockForeignIdentity(uuid);
+            try {
+                loginHandler.onCompleteLogin(context, userProfile, idTokenResponse, originalRequest.getContinuation(), req, resp);
+            } finally {
+                ForeignIdentityUtils.unlockForeignIdentity(uuid);
+            }
         }
     }
 
@@ -235,7 +239,7 @@ public class OpenIDHandler extends RequestHandler {
             if (foreignIdentity == null) {
                 //If the user was deleted in the mean time, we should trigger a authorize request instead.
                 LOG.debug("Could not find foreign identity for existing session, performing authorize request to re-login the user.");
-                performAuthorizeRequest(req, resp, context, continuation);
+                performAuthorizeRequest(req, resp, context, continuation, Prompt.Type.LOGIN);
                 return;
             }
 
@@ -255,11 +259,19 @@ public class OpenIDHandler extends RequestHandler {
                 ForeignIdentityUtils.unlockForeignIdentity(foreignIdentity.getUUID());
             }
         } else {
-            performAuthorizeRequest(req, resp, context, continuation);
+            final Optional<String> promptParam = Optional.ofNullable(req.getParameter("prompt"));
+            final String promptValue = promptParam.orElse(Prompt.Type.NONE.toString());
+            final Prompt.Type promptType;
+            if (ConfigurationManager.getInstance().getSilentAuthentication() && promptValue.equals(Prompt.Type.NONE.toString())) {
+                promptType = Prompt.Type.NONE;
+            } else {
+                promptType = Prompt.Type.LOGIN;
+            }
+            performAuthorizeRequest(req, resp, context, continuation, promptType);
         }
     }
 
-    private void performAuthorizeRequest(IMxRuntimeRequest req, IMxRuntimeResponse resp, IContext context, String continuation) throws Exception {
+    private void performAuthorizeRequest(IMxRuntimeRequest req, IMxRuntimeResponse resp, IContext context, String continuation, final Prompt.Type promptType) throws Exception {
         LOG.debug("Incoming login request, redirecting to OpenID provider");
 
         final State state = new State();
@@ -267,12 +279,12 @@ public class OpenIDHandler extends RequestHandler {
 
         // Initialize or generate nonce
         final Nonce nonce = new Nonce();
-
         // Specify scope
-        final Scope scope = Scope.parse(Constants.getOpenIdConnectScopes());
+        final Scope scope = Scope.parse(ConfigurationManager.getInstance().getOpenIDConnectScopes());
         final IdentityProviderMetaData discovered = IdentityProviderMetaDataCache.getInstance().getIdentityProviderMetaData();
         // Compose the request
-        final AuthenticationRequest authenticationRequest = new AuthenticationRequest.Builder(
+        final String signupHint = ConfigurationManager.getInstance().getSignupHint();
+        final AuthenticationRequest.Builder authenticationRequestBuilder = new AuthenticationRequest.Builder(
                 discovered.getResponseType(),
                 scope,
                 discovered.getClientId(),
@@ -281,15 +293,20 @@ public class OpenIDHandler extends RequestHandler {
                 .endpointURI(discovered.getProviderMetadata().getAuthorizationEndpointURI())
                 .state(state)
                 .nonce(nonce)
-                .build();
+                .prompt(new Prompt(promptType));
 
-        final URI authReqURI = authenticationRequest.toURI();
+        if (signupHint != null && !signupHint.equals("")) {
+            authenticationRequestBuilder.customParameter("signup_hint", signupHint);
+        }
+
+        final URI authReqURI = authenticationRequestBuilder.build().toURI();
 
         // store in the database
         final AuthRequest authReq = new AuthRequest(context);
         authReq.setState(state.getValue());
         authReq.setNonce(nonce.getValue());
         authReq.setContinuation(continuation);
+        authReq.setPrompt(promptType.toString());
         authReq.commit();
 
         LOG.debug("Redirecting to " + authReqURI.toString());
@@ -298,15 +315,19 @@ public class OpenIDHandler extends RequestHandler {
     }
 
     private void logoff(IMxRuntimeRequest req, IMxRuntimeResponse resp) throws CoreException {
+        final String continuation = req.getParameter(CONTINUATION_PARAM);
+        detectContinuationJsInjection(continuation);
+
         final ISession session = this.getSessionFromRequest(req);
         if (session != null) {
             Core.logout(session);
         }
-        redirect(resp, INDEX_PAGE); //ToDo: implement CONTINUATION_PARAM
+
+        OpenIDUtils.redirectToIndex(req, resp, continuation);
     }
 
     private void detectContinuationJsInjection(String url) {
-        if (url != null && url.trim().startsWith("javascript:"))
+        if (url != null && url.trim().toLowerCase().startsWith("javascript:"))
             throw new IllegalArgumentException("Javascript injection detected in parameter '" + CONTINUATION_PARAM + "'");
     }
 
@@ -317,10 +338,10 @@ public class OpenIDHandler extends RequestHandler {
             final OIDCProviderMetadata oidcProviderMetadata = IdentityProviderMetaDataCache.getInstance().getIdentityProviderMetaData().getProviderMetadata();
             final LogoutTokenValidator validator = new LogoutTokenValidator(
                     oidcProviderMetadata.getIssuer(),
-                    new ClientID(getEnvironmentUUID()),
+                    new ClientID(ConfigurationManager.getInstance().getEnvironmentUUID()),
                     JWSAlgorithm.RS256,
                     oidcProviderMetadata.getJWKSetURI().toURL());
-            validator.setMaxClockSkew(Constants.getTokenValidatorMaxClockSkew().intValue());
+            validator.setMaxClockSkew(ConfigurationManager.getInstance().getTokenValidatorMaxClockSkew().intValue());
 
             final JWT logoutToken = backChannelLogoutRequest.getLogoutToken();
             final LogoutTokenClaimsSet claimsSet = validator.validate(logoutToken);

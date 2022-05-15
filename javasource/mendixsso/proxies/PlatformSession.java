@@ -23,7 +23,7 @@ public class PlatformSession
 		SessionId("SessionId"),
 		PlatformSession_Session("MendixSSO.PlatformSession_Session");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -39,15 +39,17 @@ public class PlatformSession
 
 	public PlatformSession(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "MendixSSO.PlatformSession"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected PlatformSession(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject platformSessionMendixObject)
 	{
-		if (platformSessionMendixObject == null)
+		if (platformSessionMendixObject == null) {
 			throw new java.lang.IllegalArgumentException("The given object cannot be null.");
-		if (!com.mendix.core.Core.isSubClassOf("MendixSSO.PlatformSession", platformSessionMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a MendixSSO.PlatformSession");
+		}
+		if (!com.mendix.core.Core.isSubClassOf(entityName, platformSessionMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 
 		this.platformSessionMendixObject = platformSessionMendixObject;
 		this.context = context;
@@ -65,6 +67,9 @@ public class PlatformSession
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static mendixsso.proxies.PlatformSession initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -79,14 +84,16 @@ public class PlatformSession
 
 	public static java.util.List<mendixsso.proxies.PlatformSession> load(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String xpathConstraint) throws com.mendix.core.CoreException
 	{
-		java.util.List<mendixsso.proxies.PlatformSession> result = new java.util.ArrayList<mendixsso.proxies.PlatformSession>();
-		for (com.mendix.systemwideinterfaces.core.IMendixObject obj : com.mendix.core.Core.retrieveXPathQuery(context, "//MendixSSO.PlatformSession" + xpathConstraint))
-			result.add(mendixsso.proxies.PlatformSession.initialize(context, obj));
-		return result;
+		return com.mendix.core.Core.createXPathQuery(String.format("//%1$s%2$s", entityName, xpathConstraint))
+			.execute(context)
+			.stream()
+			.map(obj -> mendixsso.proxies.PlatformSession.initialize(context, obj))
+			.collect(java.util.stream.Collectors.toList());
 	}
 
 	/**
 	 * Commit the changes made on this proxy object.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit() throws com.mendix.core.CoreException
 	{
@@ -95,6 +102,7 @@ public class PlatformSession
 
 	/**
 	 * Commit the changes made on this proxy object using the specified context.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
@@ -153,6 +161,7 @@ public class PlatformSession
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of PlatformSession_Session
 	 */
 	public final system.proxies.Session getPlatformSession_Session() throws com.mendix.core.CoreException
@@ -163,13 +172,15 @@ public class PlatformSession
 	/**
 	 * @param context
 	 * @return value of PlatformSession_Session
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final system.proxies.Session getPlatformSession_Session(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		system.proxies.Session result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.PlatformSession_Session.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = system.proxies.Session.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -189,10 +200,11 @@ public class PlatformSession
 	 */
 	public final void setPlatformSession_Session(com.mendix.systemwideinterfaces.core.IContext context, system.proxies.Session platformsession_session)
 	{
-		if (platformsession_session == null)
+		if (platformsession_session == null) {
 			getMendixObject().setValue(context, MemberNames.PlatformSession_Session.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.PlatformSession_Session.toString(), platformsession_session.getMendixObject().getId());
+		}
 	}
 
 	/**
@@ -214,9 +226,9 @@ public class PlatformSession
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final mendixsso.proxies.PlatformSession that = (mendixsso.proxies.PlatformSession) obj;
@@ -236,7 +248,7 @@ public class PlatformSession
 	 */
 	public static java.lang.String getType()
 	{
-		return "MendixSSO.PlatformSession";
+		return entityName;
 	}
 
 	/**

@@ -8,11 +8,24 @@ import com.mendix.core.Core;
 
 public class Constants
 {
+	/**
+	 * @deprecated
+	 * The default constructor of the Constants class should not be used.
+	 * Use the static get methods instead.
+	 */
+	@java.lang.Deprecated(since = "9.12", forRemoval = true)
+	public Constants() {}
+
 	// These are the constants for the MendixSSO module
 
 	public static java.lang.Long getAuthRequestExpiryDurationInMinutes()
 	{
 		return (java.lang.Long)Core.getConfiguration().getConstantValue("MendixSSO.AuthRequestExpiryDurationInMinutes");
+	}
+
+	public static java.lang.Long getBatchSize()
+	{
+		return (java.lang.Long)Core.getConfiguration().getConstantValue("MendixSSO.BatchSize");
 	}
 
 	/**
@@ -24,11 +37,6 @@ public class Constants
 	public static boolean getConsentToDeleteIncompatibleUsers()
 	{
 		return (java.lang.Boolean)Core.getConfiguration().getConstantValue("MendixSSO.ConsentToDeleteIncompatibleUsers");
-	}
-
-	public static java.lang.Long getDeleteTokenBatchSize()
-	{
-		return (java.lang.Long)Core.getConfiguration().getConstantValue("MendixSSO.DeleteTokenBatchSize");
 	}
 
 	/**
@@ -66,11 +74,6 @@ public class Constants
 		return (java.lang.String)Core.getConfiguration().getConstantValue("MendixSSO.LogNode");
 	}
 
-	public static java.lang.String getMxID2_OpenIDPrefix()
-	{
-		return (java.lang.String)Core.getConfiguration().getConstantValue("MendixSSO.MxID2_OpenIDPrefix");
-	}
-
 	public static java.lang.String getOpenIdConnectDiscoveryPath()
 	{
 		return (java.lang.String)Core.getConfiguration().getConstantValue("MendixSSO.OpenIdConnectDiscoveryPath");
@@ -89,6 +92,16 @@ public class Constants
 	public static java.lang.String getRolesLocation()
 	{
 		return (java.lang.String)Core.getConfiguration().getConstantValue("MendixSSO.RolesLocation");
+	}
+
+	public static java.lang.String getSignupHint()
+	{
+		return (java.lang.String)Core.getConfiguration().getConstantValue("MendixSSO.SignupHint");
+	}
+
+	public static boolean getSilentAuthentication()
+	{
+		return (java.lang.Boolean)Core.getConfiguration().getConstantValue("MendixSSO.SilentAuthentication");
 	}
 
 	/**

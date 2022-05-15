@@ -81,20 +81,20 @@ public class UserManager {
         }
     }
 
-    private static User createUserWithForeignIdentity(IContext c, UserProfile userProfile, String uuid) throws CoreException {
-        final IMendixObject mxNewUser = UserMapper.getInstance().createUser(c, userProfile, uuid);
+    private static User createUserWithForeignIdentity(IContext context, UserProfile userProfile, String uuid) throws CoreException {
+        final IMendixObject mxNewUser = UserMapper.getInstance().createUser(context, userProfile, uuid);
 
-        final boolean hasAccess = Core.execute(c, "MendixSSO.RetrieveUserRoles", new HashMap<String, Object>() {{
-            put("UUID", uuid);
-            put("User", mxNewUser);
-        }});
+        final boolean hasAccess = Core.microflowCall("MendixSSO.RetrieveUserRoles")
+                .withParam("UserUUID", uuid)
+                .withParam("User", mxNewUser)
+                .execute(context);
 
         if (hasAccess) {
-            final User user = User.initialize(c, mxNewUser);
+            final User user = User.initialize(context, mxNewUser);
             user.setPassword(OpenIDUtils.randomStrongPassword(48, 48, 7, 9, 6));
             user.commit();
 
-            ForeignIdentityUtils.createForeignIdentity(c, user, uuid);
+            ForeignIdentityUtils.createForeignIdentity(context, user, uuid);
             return user;
         } else {
             throw new UnauthorizedUserException(uuid);

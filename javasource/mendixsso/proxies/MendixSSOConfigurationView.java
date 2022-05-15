@@ -21,12 +21,15 @@ public class MendixSSOConfigurationView
 	public enum MemberNames
 	{
 		SSOEnabled("SSOEnabled"),
+		SilentAuthentication("SilentAuthentication"),
+		DefaultRequestScopes("DefaultRequestScopes"),
 		EnvironmentUUID("EnvironmentUUID"),
 		EnvironmentPassword("EnvironmentPassword"),
 		OpenIdConnectProvider("OpenIdConnectProvider"),
-		RolesLocation("RolesLocation");
+		RolesLocation("RolesLocation"),
+		SignupHint("SignupHint");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -42,15 +45,17 @@ public class MendixSSOConfigurationView
 
 	public MendixSSOConfigurationView(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "MendixSSO.MendixSSOConfigurationView"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected MendixSSOConfigurationView(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixSSOConfigurationViewMendixObject)
 	{
-		if (mendixSSOConfigurationViewMendixObject == null)
+		if (mendixSSOConfigurationViewMendixObject == null) {
 			throw new java.lang.IllegalArgumentException("The given object cannot be null.");
-		if (!com.mendix.core.Core.isSubClassOf("MendixSSO.MendixSSOConfigurationView", mendixSSOConfigurationViewMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a MendixSSO.MendixSSOConfigurationView");
+		}
+		if (!com.mendix.core.Core.isSubClassOf(entityName, mendixSSOConfigurationViewMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 
 		this.mendixSSOConfigurationViewMendixObject = mendixSSOConfigurationViewMendixObject;
 		this.context = context;
@@ -68,6 +73,9 @@ public class MendixSSOConfigurationView
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static mendixsso.proxies.MendixSSOConfigurationView initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -82,6 +90,7 @@ public class MendixSSOConfigurationView
 
 	/**
 	 * Commit the changes made on this proxy object.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit() throws com.mendix.core.CoreException
 	{
@@ -90,6 +99,7 @@ public class MendixSSOConfigurationView
 
 	/**
 	 * Commit the changes made on this proxy object using the specified context.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
@@ -145,6 +155,78 @@ public class MendixSSOConfigurationView
 	public final void setSSOEnabled(com.mendix.systemwideinterfaces.core.IContext context, java.lang.Boolean ssoenabled)
 	{
 		getMendixObject().setValue(context, MemberNames.SSOEnabled.toString(), ssoenabled);
+	}
+
+	/**
+	 * @return value of SilentAuthentication
+	 */
+	public final java.lang.Boolean getSilentAuthentication()
+	{
+		return getSilentAuthentication(getContext());
+	}
+
+	/**
+	 * @param context
+	 * @return value of SilentAuthentication
+	 */
+	public final java.lang.Boolean getSilentAuthentication(com.mendix.systemwideinterfaces.core.IContext context)
+	{
+		return (java.lang.Boolean) getMendixObject().getValue(context, MemberNames.SilentAuthentication.toString());
+	}
+
+	/**
+	 * Set value of SilentAuthentication
+	 * @param silentauthentication
+	 */
+	public final void setSilentAuthentication(java.lang.Boolean silentauthentication)
+	{
+		setSilentAuthentication(getContext(), silentauthentication);
+	}
+
+	/**
+	 * Set value of SilentAuthentication
+	 * @param context
+	 * @param silentauthentication
+	 */
+	public final void setSilentAuthentication(com.mendix.systemwideinterfaces.core.IContext context, java.lang.Boolean silentauthentication)
+	{
+		getMendixObject().setValue(context, MemberNames.SilentAuthentication.toString(), silentauthentication);
+	}
+
+	/**
+	 * @return value of DefaultRequestScopes
+	 */
+	public final java.lang.String getDefaultRequestScopes()
+	{
+		return getDefaultRequestScopes(getContext());
+	}
+
+	/**
+	 * @param context
+	 * @return value of DefaultRequestScopes
+	 */
+	public final java.lang.String getDefaultRequestScopes(com.mendix.systemwideinterfaces.core.IContext context)
+	{
+		return (java.lang.String) getMendixObject().getValue(context, MemberNames.DefaultRequestScopes.toString());
+	}
+
+	/**
+	 * Set value of DefaultRequestScopes
+	 * @param defaultrequestscopes
+	 */
+	public final void setDefaultRequestScopes(java.lang.String defaultrequestscopes)
+	{
+		setDefaultRequestScopes(getContext(), defaultrequestscopes);
+	}
+
+	/**
+	 * Set value of DefaultRequestScopes
+	 * @param context
+	 * @param defaultrequestscopes
+	 */
+	public final void setDefaultRequestScopes(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String defaultrequestscopes)
+	{
+		getMendixObject().setValue(context, MemberNames.DefaultRequestScopes.toString(), defaultrequestscopes);
 	}
 
 	/**
@@ -292,6 +374,42 @@ public class MendixSSOConfigurationView
 	}
 
 	/**
+	 * @return value of SignupHint
+	 */
+	public final java.lang.String getSignupHint()
+	{
+		return getSignupHint(getContext());
+	}
+
+	/**
+	 * @param context
+	 * @return value of SignupHint
+	 */
+	public final java.lang.String getSignupHint(com.mendix.systemwideinterfaces.core.IContext context)
+	{
+		return (java.lang.String) getMendixObject().getValue(context, MemberNames.SignupHint.toString());
+	}
+
+	/**
+	 * Set value of SignupHint
+	 * @param signuphint
+	 */
+	public final void setSignupHint(java.lang.String signuphint)
+	{
+		setSignupHint(getContext(), signuphint);
+	}
+
+	/**
+	 * Set value of SignupHint
+	 * @param context
+	 * @param signuphint
+	 */
+	public final void setSignupHint(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String signuphint)
+	{
+		getMendixObject().setValue(context, MemberNames.SignupHint.toString(), signuphint);
+	}
+
+	/**
 	 * @return the IMendixObject instance of this proxy for use in the Core interface.
 	 */
 	public final com.mendix.systemwideinterfaces.core.IMendixObject getMendixObject()
@@ -310,9 +428,9 @@ public class MendixSSOConfigurationView
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final mendixsso.proxies.MendixSSOConfigurationView that = (mendixsso.proxies.MendixSSOConfigurationView) obj;
@@ -332,7 +450,7 @@ public class MendixSSOConfigurationView
 	 */
 	public static java.lang.String getType()
 	{
-		return "MendixSSO.MendixSSOConfigurationView";
+		return entityName;
 	}
 
 	/**

@@ -24,6 +24,7 @@ public class MendixSSOUser extends system.proxies.User
 		Password("Password"),
 		LastLogin("LastLogin"),
 		Blocked("Blocked"),
+		BlockedSince("BlockedSince"),
 		Active("Active"),
 		FailedLogins("FailedLogins"),
 		WebServiceUser("WebServiceUser"),
@@ -32,7 +33,7 @@ public class MendixSSOUser extends system.proxies.User
 		User_Language("System.User_Language"),
 		User_TimeZone("System.User_TimeZone");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -48,14 +49,15 @@ public class MendixSSOUser extends system.proxies.User
 
 	public MendixSSOUser(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "Timesheet.MendixSSOUser"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected MendixSSOUser(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixSSOUserMendixObject)
 	{
 		super(context, mendixSSOUserMendixObject);
-		if (!com.mendix.core.Core.isSubClassOf("Timesheet.MendixSSOUser", mendixSSOUserMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a Timesheet.MendixSSOUser");
+		if (!com.mendix.core.Core.isSubClassOf(entityName, mendixSSOUserMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 	}
 
 	/**
@@ -70,6 +72,9 @@ public class MendixSSOUser extends system.proxies.User
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static timesheet.proxies.MendixSSOUser initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -84,10 +89,11 @@ public class MendixSSOUser extends system.proxies.User
 
 	public static java.util.List<timesheet.proxies.MendixSSOUser> load(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String xpathConstraint) throws com.mendix.core.CoreException
 	{
-		java.util.List<timesheet.proxies.MendixSSOUser> result = new java.util.ArrayList<timesheet.proxies.MendixSSOUser>();
-		for (com.mendix.systemwideinterfaces.core.IMendixObject obj : com.mendix.core.Core.retrieveXPathQuery(context, "//Timesheet.MendixSSOUser" + xpathConstraint))
-			result.add(timesheet.proxies.MendixSSOUser.initialize(context, obj));
-		return result;
+		return com.mendix.core.Core.createXPathQuery(String.format("//%1$s%2$s", entityName, xpathConstraint))
+			.execute(context)
+			.stream()
+			.map(obj -> timesheet.proxies.MendixSSOUser.initialize(context, obj))
+			.collect(java.util.stream.Collectors.toList());
 	}
 
 	/**
@@ -237,9 +243,9 @@ public class MendixSSOUser extends system.proxies.User
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final timesheet.proxies.MendixSSOUser that = (timesheet.proxies.MendixSSOUser) obj;
@@ -259,7 +265,7 @@ public class MendixSSOUser extends system.proxies.User
 	 */
 	public static java.lang.String getType()
 	{
-		return "Timesheet.MendixSSOUser";
+		return entityName;
 	}
 
 	/**

@@ -7,19 +7,25 @@ package mendixsso.proxies.microflows;
 import java.util.HashMap;
 import java.util.Map;
 import com.mendix.core.Core;
-import com.mendix.core.CoreException;
-import com.mendix.systemwideinterfaces.MendixRuntimeException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 public class Microflows
 {
+	/**
+	 * @deprecated
+	 * The default constructor of the Microflows class should not be used.
+	 * Use the static microflow invocation methods instead.
+	 */
+	@java.lang.Deprecated(since = "9.12", forRemoval = true)
+	public Microflows() {}
+
 	// These are the microflows for the MendixSSO module
-	public static system.proxies.User authorizeRequestWithAccessToken(IContext context, java.lang.String _authorizationHeader)
+	public static system.proxies.User authorizeRequestWithAccessTokenFromRequest(IContext context, system.proxies.HttpRequest _httpRequest)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("AuthorizationHeader", _authorizationHeader);
-		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.AuthorizeRequestWithAccessToken").withParams(params).execute(context);
+		params.put("HttpRequest", _httpRequest == null ? null : _httpRequest.getMendixObject());
+		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.AuthorizeRequestWithAccessTokenFromRequest").withParams(params).execute(context);
 		return result == null ? null : system.proxies.User.initialize(context, result);
 	}
 	public static boolean checkUserRolesRemoved(IContext context, system.proxies.User _user)
@@ -28,10 +34,22 @@ public class Microflows
 		params.put("User", _user == null ? null : _user.getMendixObject());
 		return (java.lang.Boolean) Core.microflowCall("MendixSSO.CheckUserRolesRemoved").withParams(params).execute(context);
 	}
-	public static void cleanupAuthRequest(IContext context)
+	public static java.util.List<system.proxies.HttpHeader> createAccessTokenAuthorizationHeaderList(IContext context)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
-		Core.microflowCall("MendixSSO.CleanupAuthRequest").withParams(params).execute(context);
+		java.util.List<IMendixObject> objs = Core.microflowCall("MendixSSO.CreateAccessTokenAuthorizationHeaderList").withParams(params).execute(context);
+		if (objs == null) {
+			return null;
+		} else {
+			return objs.stream()
+				.map(obj -> system.proxies.HttpHeader.initialize(context, obj))
+				.collect(java.util.stream.Collectors.toList());
+		}
+	}
+	public static java.lang.String createAccessTokenAuthorizationHeaderValue(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		return (java.lang.String) Core.microflowCall("MendixSSO.CreateAccessTokenAuthorizationHeaderValue").withParams(params).execute(context);
 	}
 	public static java.lang.String decrypt(IContext context, java.lang.String _encrypted)
 	{
@@ -39,60 +57,46 @@ public class Microflows
 		params.put("Encrypted", _encrypted);
 		return (java.lang.String) Core.microflowCall("MendixSSO.Decrypt").withParams(params).execute(context);
 	}
-	public static mendixsso.proxies.DecryptedToken dS_GetCurrentAccessToken(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.DS_GetCurrentAccessToken").withParams(params).execute(context);
-		return result == null ? null : mendixsso.proxies.DecryptedToken.initialize(context, result);
-	}
-	public static mendixsso.proxies.DecryptedToken dS_GetCurrentIdToken(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.DS_GetCurrentIdToken").withParams(params).execute(context);
-		return result == null ? null : mendixsso.proxies.DecryptedToken.initialize(context, result);
-	}
-	public static timesheet.proxies.MendixSSOUser dS_GetCurrentMendixSSOUser(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.DS_GetCurrentMendixSSOUser").withParams(params).execute(context);
-		return result == null ? null : timesheet.proxies.MendixSSOUser.initialize(context, result);
-	}
-	public static mendixsso.proxies.DecryptedToken dS_GetCurrentRefreshToken(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.DS_GetCurrentRefreshToken").withParams(params).execute(context);
-		return result == null ? null : mendixsso.proxies.DecryptedToken.initialize(context, result);
-	}
-	public static mendixsso.proxies.ForeignIdentity dS_GetForeignIdentity(IContext context, timesheet.proxies.MendixSSOUser _mendixSSOUser)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("MendixSSOUser", _mendixSSOUser == null ? null : _mendixSSOUser.getMendixObject());
-		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.DS_GetForeignIdentity").withParams(params).execute(context);
-		return result == null ? null : mendixsso.proxies.ForeignIdentity.initialize(context, result);
-	}
-	public static mendixsso.proxies.MendixSSOConfigurationView dS_GetMendixSSOConfiguration(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.DS_GetMendixSSOConfiguration").withParams(params).execute(context);
-		return result == null ? null : mendixsso.proxies.MendixSSOConfigurationView.initialize(context, result);
-	}
 	public static java.lang.String encrypt(IContext context, java.lang.String _plain)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		params.put("Plain", _plain);
 		return (java.lang.String) Core.microflowCall("MendixSSO.Encrypt").withParams(params).execute(context);
 	}
-	public static mendixsso.proxies.DecryptedToken getAccessTokenAndEnsureNotExpiresSoon(IContext context)
+	public static java.lang.String getEnvironmentPassword(IContext context)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
-		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.GetAccessTokenAndEnsureNotExpiresSoon").withParams(params).execute(context);
-		return result == null ? null : mendixsso.proxies.DecryptedToken.initialize(context, result);
+		return (java.lang.String) Core.microflowCall("MendixSSO.GetEnvironmentPassword").withParams(params).execute(context);
 	}
-	public static java.lang.String getOpenIDForSSOUser(IContext context, system.proxies.User _user)
+	public static java.lang.String getEnvironmentUUID(IContext context)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("User", _user == null ? null : _user.getMendixObject());
-		return (java.lang.String) Core.microflowCall("MendixSSO.GetOpenIDForSSOUser").withParams(params).execute(context);
+		return (java.lang.String) Core.microflowCall("MendixSSO.GetEnvironmentUUID").withParams(params).execute(context);
+	}
+	public static java.lang.String getOpenIDConnectProvider(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		return (java.lang.String) Core.microflowCall("MendixSSO.GetOpenIDConnectProvider").withParams(params).execute(context);
+	}
+	public static java.lang.String getOpenIdConnectScopes(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		return (java.lang.String) Core.microflowCall("MendixSSO.GetOpenIdConnectScopes").withParams(params).execute(context);
+	}
+	public static java.lang.String getRolesLocation(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		return (java.lang.String) Core.microflowCall("MendixSSO.GetRolesLocation").withParams(params).execute(context);
+	}
+	public static java.lang.String getSignupHint(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		return (java.lang.String) Core.microflowCall("MendixSSO.GetSignupHint").withParams(params).execute(context);
+	}
+	public static boolean getSilentAuthentication(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		return (java.lang.Boolean) Core.microflowCall("MendixSSO.GetSilentAuthentication").withParams(params).execute(context);
 	}
 	public static mendixsso.proxies.UserProfile getUserProfileFromUserInfoEndpoint(IContext context)
 	{
@@ -100,162 +104,76 @@ public class Microflows
 		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.GetUserProfileFromUserInfoEndpoint").withParams(params).execute(context);
 		return result == null ? null : mendixsso.proxies.UserProfile.initialize(context, result);
 	}
-	public static void iVK_DecryptAndViewToken(IContext context, mendixsso.proxies.Token _token)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("Token", _token == null ? null : _token.getMendixObject());
-		Core.microflowCall("MendixSSO.IVK_DecryptAndViewToken").withParams(params).execute(context);
-	}
-	public static void iVK_DeleteAllTokens(IContext context, java.util.List<mendixsso.proxies.Token> _tokenList)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		java.util.ArrayList<IMendixObject> listparam_tokenList = null;
-		if (_tokenList != null)
-		{
-			listparam_tokenList = new java.util.ArrayList<>();
-			for (mendixsso.proxies.Token obj : _tokenList)
-				listparam_tokenList.add(obj.getMendixObject());
-		}
-		params.put("TokenList", listparam_tokenList);
-
-		Core.microflowCall("MendixSSO.IVK_DeleteAllTokens").withParams(params).execute(context);
-	}
-	public static void iVK_DeleteExpiredTokens(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		Core.microflowCall("MendixSSO.IVK_DeleteExpiredTokens").withParams(params).execute(context);
-	}
-	public static void iVK_DeleteMendixSSOUser(IContext context, java.util.List<timesheet.proxies.MendixSSOUser> _mendixSSOUserList)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		java.util.ArrayList<IMendixObject> listparam_mendixSSOUserList = null;
-		if (_mendixSSOUserList != null)
-		{
-			listparam_mendixSSOUserList = new java.util.ArrayList<>();
-			for (timesheet.proxies.MendixSSOUser obj : _mendixSSOUserList)
-				listparam_mendixSSOUserList.add(obj.getMendixObject());
-		}
-		params.put("MendixSSOUserList", listparam_mendixSSOUserList);
-
-		Core.microflowCall("MendixSSO.IVK_DeleteMendixSSOUser").withParams(params).execute(context);
-	}
-	public static void iVK_DeleteToken(IContext context, mendixsso.proxies.Token _token)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("Token", _token == null ? null : _token.getMendixObject());
-		Core.microflowCall("MendixSSO.IVK_DeleteToken").withParams(params).execute(context);
-	}
-	public static void iVK_NewLocalUser(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		Core.microflowCall("MendixSSO.IVK_NewLocalUser").withParams(params).execute(context);
-	}
-	public static void iVK_NewWebserviceUser(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		Core.microflowCall("MendixSSO.IVK_NewWebserviceUser").withParams(params).execute(context);
-	}
-	public static void iVK_RefreshTokens(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		Core.microflowCall("MendixSSO.IVK_RefreshTokens").withParams(params).execute(context);
-	}
-	public static void iVK_SaveChangedPassword(IContext context, mendixsso.proxies.AccountPasswordData _accountPasswordData)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("AccountPasswordData", _accountPasswordData == null ? null : _accountPasswordData.getMendixObject());
-		Core.microflowCall("MendixSSO.IVK_SaveChangedPassword").withParams(params).execute(context);
-	}
-	public static void iVK_SaveChangedUser(IContext context, timesheet.proxies.MendixSSOUser _mendixSSOUser)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("MendixSSOUser", _mendixSSOUser == null ? null : _mendixSSOUser.getMendixObject());
-		Core.microflowCall("MendixSSO.IVK_SaveChangedUser").withParams(params).execute(context);
-	}
-	public static void iVK_SaveMyChangedPassword(IContext context, mendixsso.proxies.AccountPasswordData _accountPasswordData)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("AccountPasswordData", _accountPasswordData == null ? null : _accountPasswordData.getMendixObject());
-		Core.microflowCall("MendixSSO.IVK_SaveMyChangedPassword").withParams(params).execute(context);
-	}
-	public static void iVK_SaveNewLocalUser(IContext context, mendixsso.proxies.AccountPasswordData _accountPasswordData)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("AccountPasswordData", _accountPasswordData == null ? null : _accountPasswordData.getMendixObject());
-		Core.microflowCall("MendixSSO.IVK_SaveNewLocalUser").withParams(params).execute(context);
-	}
-	public static void iVK_ShowMyPasswordForm(IContext context, timesheet.proxies.MendixSSOUser _user)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("User", _user == null ? null : _user.getMendixObject());
-		Core.microflowCall("MendixSSO.IVK_ShowMyPasswordForm").withParams(params).execute(context);
-	}
-	public static void iVK_ShowPasswordForm(IContext context, timesheet.proxies.MendixSSOUser _user)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		params.put("User", _user == null ? null : _user.getMendixObject());
-		Core.microflowCall("MendixSSO.IVK_ShowPasswordForm").withParams(params).execute(context);
-	}
 	public static boolean mendixSSO_AfterStartup(IContext context)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		return (java.lang.Boolean) Core.microflowCall("MendixSSO.MendixSSO_AfterStartup").withParams(params).execute(context);
 	}
-	public static timesheet.proxies.MendixSSOUser mendixSSO_CreateUser(IContext context, mendixsso.proxies.UserProfile _userProfile, java.lang.String _uUID)
+	public static mendixsso.proxies.MendixSSOUser mendixSSO_CreateUser(IContext context, mendixsso.proxies.UserProfile _userProfile, java.lang.String _uUID)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		params.put("UserProfile", _userProfile == null ? null : _userProfile.getMendixObject());
 		params.put("UUID", _uUID);
 		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.MendixSSO_CreateUser").withParams(params).execute(context);
-		return result == null ? null : timesheet.proxies.MendixSSOUser.initialize(context, result);
+		return result == null ? null : mendixsso.proxies.MendixSSOUser.initialize(context, result);
 	}
-	public static timesheet.proxies.MendixSSOUser mendixSSO_UpdateUser(IContext context, timesheet.proxies.MendixSSOUser _user, mendixsso.proxies.UserProfile _userProfile, java.lang.String _uUID)
+	public static mendixsso.proxies.MendixSSOUser mendixSSO_UpdateUser(IContext context, mendixsso.proxies.MendixSSOUser _user, mendixsso.proxies.UserProfile _userProfile, java.lang.String _uUID)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		params.put("User", _user == null ? null : _user.getMendixObject());
 		params.put("UserProfile", _userProfile == null ? null : _userProfile.getMendixObject());
 		params.put("UUID", _uUID);
 		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.MendixSSO_UpdateUser").withParams(params).execute(context);
-		return result == null ? null : timesheet.proxies.MendixSSOUser.initialize(context, result);
+		return result == null ? null : mendixsso.proxies.MendixSSOUser.initialize(context, result);
 	}
-	public static mendixsso.proxies.Response refreshTokens(IContext context)
-	{
-		Map<java.lang.String, Object> params = new HashMap<>();
-		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.RefreshTokens").withParams(params).execute(context);
-		return result == null ? null : mendixsso.proxies.Response.initialize(context, result);
-	}
-	public static void refreshUserRoles(IContext context, system.proxies.User _user, java.lang.String _uUID)
+	public static void refreshUserRoles(IContext context, system.proxies.User _user, java.lang.String _userUUID)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		params.put("User", _user == null ? null : _user.getMendixObject());
-		params.put("UUID", _uUID);
+		params.put("UserUUID", _userUUID);
 		Core.microflowCall("MendixSSO.RefreshUserRoles").withParams(params).execute(context);
 	}
-	public static boolean retrieveUserRoles(IContext context, system.proxies.User _user, java.lang.String _uUID)
+	public static boolean retrieveUserRoles(IContext context, system.proxies.User _user, java.lang.String _userUUID)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		params.put("User", _user == null ? null : _user.getMendixObject());
-		params.put("UUID", _uUID);
+		params.put("UserUUID", _userUUID);
 		return (java.lang.Boolean) Core.microflowCall("MendixSSO.RetrieveUserRoles").withParams(params).execute(context);
 	}
-	public static void rS_NotifyUserRolesChanged(IContext context, java.lang.String _uUID, system.proxies.HttpRequest _httpRequest, system.proxies.HttpResponse _httpResponse)
+	public static void rS_NotifyUserRolesChanged(IContext context, java.lang.String _uUID)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		params.put("UUID", _uUID);
-		params.put("httpRequest", _httpRequest == null ? null : _httpRequest.getMendixObject());
-		params.put("httpResponse", _httpResponse == null ? null : _httpResponse.getMendixObject());
 		Core.microflowCall("MendixSSO.RS_NotifyUserRolesChanged").withParams(params).execute(context);
+	}
+	public static void sE_DeleteExpiredAuthRequests(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		Core.microflowCall("MendixSSO.SE_DeleteExpiredAuthRequests").withParams(params).execute(context);
 	}
 	public static void sE_DeleteExpiredTokens(IContext context)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		Core.microflowCall("MendixSSO.SE_DeleteExpiredTokens").withParams(params).execute(context);
 	}
+	public static system.proxies.User sUB_AuthorizeRequestWithAccessTokenFromHeader(IContext context, java.lang.String _authorizationHeader)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		params.put("AuthorizationHeader", _authorizationHeader);
+		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.SUB_AuthorizeRequestWithAccessTokenFromHeader").withParams(params).execute(context);
+		return result == null ? null : system.proxies.User.initialize(context, result);
+	}
 	public static mendixsso.proxies.DecryptedToken sUB_DecryptToken(IContext context, mendixsso.proxies.Token _token)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		params.put("Token", _token == null ? null : _token.getMendixObject());
 		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.SUB_DecryptToken").withParams(params).execute(context);
+		return result == null ? null : mendixsso.proxies.DecryptedToken.initialize(context, result);
+	}
+	public static mendixsso.proxies.DecryptedToken sUB_GetAccessTokenAndEnsureNotExpiresSoon(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.SUB_GetAccessTokenAndEnsureNotExpiresSoon").withParams(params).execute(context);
 		return result == null ? null : mendixsso.proxies.DecryptedToken.initialize(context, result);
 	}
 	public static mendixsso.proxies.DecryptedToken sUB_GetDecryptedTokenByTypeForCurrentSession(IContext context, mendixsso.proxies.TokenType _tokenType)
@@ -265,11 +183,11 @@ public class Microflows
 		IMendixObject result = (IMendixObject)Core.microflowCall("MendixSSO.SUB_GetDecryptedTokenByTypeForCurrentSession").withParams(params).execute(context);
 		return result == null ? null : mendixsso.proxies.DecryptedToken.initialize(context, result);
 	}
-	public static java.lang.String sUB_GetHttpHeaderValue(IContext context, java.lang.String _headerName, system.proxies.HttpResponse _httpResponse)
+	public static java.lang.String sUB_GetHttpHeaderValue(IContext context, java.lang.String _headerName, system.proxies.HttpMessage _httpMessage)
 	{
 		Map<java.lang.String, Object> params = new HashMap<>();
 		params.put("HeaderName", _headerName);
-		params.put("HttpResponse", _httpResponse == null ? null : _httpResponse.getMendixObject());
+		params.put("HttpMessage", _httpMessage == null ? null : _httpMessage.getMendixObject());
 		return (java.lang.String) Core.microflowCall("MendixSSO.SUB_GetHttpHeaderValue").withParams(params).execute(context);
 	}
 	public static mendixsso.proxies.Token sUB_GetTokenByTypeForCurrentSession(IContext context, mendixsso.proxies.TokenType _tokenType)

@@ -7,13 +7,19 @@ package timesheet.proxies.microflows;
 import java.util.HashMap;
 import java.util.Map;
 import com.mendix.core.Core;
-import com.mendix.core.CoreException;
-import com.mendix.systemwideinterfaces.MendixRuntimeException;
 import com.mendix.systemwideinterfaces.core.IContext;
 import com.mendix.systemwideinterfaces.core.IMendixObject;
 
 public class Microflows
 {
+	/**
+	 * @deprecated
+	 * The default constructor of the Microflows class should not be used.
+	 * Use the static microflow invocation methods instead.
+	 */
+	@java.lang.Deprecated(since = "9.12", forRemoval = true)
+	public Microflows() {}
+
 	// These are the microflows for the Timesheet module
 	public static boolean afterStartUp(IContext context)
 	{
@@ -50,6 +56,12 @@ public class Microflows
 		Map<java.lang.String, Object> params = new HashMap<>();
 		params.put("TimeEntry", _timeEntry == null ? null : _timeEntry.getMendixObject());
 		Core.microflowCall("Timesheet.DeclineTimesheetSubmission").withParams(params).execute(context);
+	}
+	public static timesheet.proxies.MendixSSOUser dS_GetCurrentUser(IContext context)
+	{
+		Map<java.lang.String, Object> params = new HashMap<>();
+		IMendixObject result = (IMendixObject)Core.microflowCall("Timesheet.DS_GetCurrentUser").withParams(params).execute(context);
+		return result == null ? null : timesheet.proxies.MendixSSOUser.initialize(context, result);
 	}
 	public static timesheet.proxies.Submission newTimesheetSubmission(IContext context)
 	{

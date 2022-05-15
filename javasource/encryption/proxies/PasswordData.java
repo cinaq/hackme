@@ -24,7 +24,7 @@ public class PasswordData
 		ConfirmPassword("ConfirmPassword"),
 		PasswordData_ExampleConfiguration("Encryption.PasswordData_ExampleConfiguration");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -40,15 +40,17 @@ public class PasswordData
 
 	public PasswordData(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "Encryption.PasswordData"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected PasswordData(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject passwordDataMendixObject)
 	{
-		if (passwordDataMendixObject == null)
+		if (passwordDataMendixObject == null) {
 			throw new java.lang.IllegalArgumentException("The given object cannot be null.");
-		if (!com.mendix.core.Core.isSubClassOf("Encryption.PasswordData", passwordDataMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a Encryption.PasswordData");
+		}
+		if (!com.mendix.core.Core.isSubClassOf(entityName, passwordDataMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 
 		this.passwordDataMendixObject = passwordDataMendixObject;
 		this.context = context;
@@ -66,6 +68,9 @@ public class PasswordData
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static encryption.proxies.PasswordData initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -80,6 +85,7 @@ public class PasswordData
 
 	/**
 	 * Commit the changes made on this proxy object.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit() throws com.mendix.core.CoreException
 	{
@@ -88,6 +94,7 @@ public class PasswordData
 
 	/**
 	 * Commit the changes made on this proxy object using the specified context.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
@@ -182,6 +189,7 @@ public class PasswordData
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of PasswordData_ExampleConfiguration
 	 */
 	public final encryption.proxies.ExampleConfiguration getPasswordData_ExampleConfiguration() throws com.mendix.core.CoreException
@@ -192,13 +200,15 @@ public class PasswordData
 	/**
 	 * @param context
 	 * @return value of PasswordData_ExampleConfiguration
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final encryption.proxies.ExampleConfiguration getPasswordData_ExampleConfiguration(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		encryption.proxies.ExampleConfiguration result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.PasswordData_ExampleConfiguration.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = encryption.proxies.ExampleConfiguration.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -218,10 +228,11 @@ public class PasswordData
 	 */
 	public final void setPasswordData_ExampleConfiguration(com.mendix.systemwideinterfaces.core.IContext context, encryption.proxies.ExampleConfiguration passworddata_exampleconfiguration)
 	{
-		if (passworddata_exampleconfiguration == null)
+		if (passworddata_exampleconfiguration == null) {
 			getMendixObject().setValue(context, MemberNames.PasswordData_ExampleConfiguration.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.PasswordData_ExampleConfiguration.toString(), passworddata_exampleconfiguration.getMendixObject().getId());
+		}
 	}
 
 	/**
@@ -243,9 +254,9 @@ public class PasswordData
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final encryption.proxies.PasswordData that = (encryption.proxies.PasswordData) obj;
@@ -265,7 +276,7 @@ public class PasswordData
 	 */
 	public static java.lang.String getType()
 	{
-		return "Encryption.PasswordData";
+		return entityName;
 	}
 
 	/**

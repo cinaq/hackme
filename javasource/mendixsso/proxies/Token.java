@@ -27,7 +27,7 @@ public class Token
 		Token_User("MendixSSO.Token_User"),
 		Token_Session("MendixSSO.Token_Session");
 
-		private java.lang.String metaName;
+		private final java.lang.String metaName;
 
 		MemberNames(java.lang.String s)
 		{
@@ -43,15 +43,17 @@ public class Token
 
 	public Token(com.mendix.systemwideinterfaces.core.IContext context)
 	{
-		this(context, com.mendix.core.Core.instantiate(context, "MendixSSO.Token"));
+		this(context, com.mendix.core.Core.instantiate(context, entityName));
 	}
 
 	protected Token(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject tokenMendixObject)
 	{
-		if (tokenMendixObject == null)
+		if (tokenMendixObject == null) {
 			throw new java.lang.IllegalArgumentException("The given object cannot be null.");
-		if (!com.mendix.core.Core.isSubClassOf("MendixSSO.Token", tokenMendixObject.getType()))
-			throw new java.lang.IllegalArgumentException("The given object is not a MendixSSO.Token");
+		}
+		if (!com.mendix.core.Core.isSubClassOf(entityName, tokenMendixObject.getType())) {
+			throw new java.lang.IllegalArgumentException(String.format("The given object is not a %s", entityName));
+		}	
 
 		this.tokenMendixObject = tokenMendixObject;
 		this.context = context;
@@ -69,6 +71,9 @@ public class Token
 	/**
 	 * Initialize a proxy using context (recommended). This context will be used for security checking when the get- and set-methods without context parameters are called.
 	 * The get- and set-methods with context parameter should be used when for instance sudo access is necessary (IContext.createSudoClone() can be used to obtain sudo access).
+	 * @param context The context to be used
+	 * @param mendixObject The Mendix object for the new instance
+	 * @return a new instance of this proxy class
 	 */
 	public static mendixsso.proxies.Token initialize(com.mendix.systemwideinterfaces.core.IContext context, com.mendix.systemwideinterfaces.core.IMendixObject mendixObject)
 	{
@@ -83,14 +88,16 @@ public class Token
 
 	public static java.util.List<mendixsso.proxies.Token> load(com.mendix.systemwideinterfaces.core.IContext context, java.lang.String xpathConstraint) throws com.mendix.core.CoreException
 	{
-		java.util.List<mendixsso.proxies.Token> result = new java.util.ArrayList<mendixsso.proxies.Token>();
-		for (com.mendix.systemwideinterfaces.core.IMendixObject obj : com.mendix.core.Core.retrieveXPathQuery(context, "//MendixSSO.Token" + xpathConstraint))
-			result.add(mendixsso.proxies.Token.initialize(context, obj));
-		return result;
+		return com.mendix.core.Core.createXPathQuery(String.format("//%1$s%2$s", entityName, xpathConstraint))
+			.execute(context)
+			.stream()
+			.map(obj -> mendixsso.proxies.Token.initialize(context, obj))
+			.collect(java.util.stream.Collectors.toList());
 	}
 
 	/**
 	 * Commit the changes made on this proxy object.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit() throws com.mendix.core.CoreException
 	{
@@ -99,6 +106,7 @@ public class Token
 
 	/**
 	 * Commit the changes made on this proxy object using the specified context.
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final void commit(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
@@ -208,9 +216,9 @@ public class Token
 	public final mendixsso.proxies.TokenType getTokenType(com.mendix.systemwideinterfaces.core.IContext context)
 	{
 		Object obj = getMendixObject().getValue(context, MemberNames.TokenType.toString());
-		if (obj == null)
+		if (obj == null) {
 			return null;
-
+		}
 		return mendixsso.proxies.TokenType.valueOf((java.lang.String) obj);
 	}
 
@@ -230,10 +238,11 @@ public class Token
 	 */
 	public final void setTokenType(com.mendix.systemwideinterfaces.core.IContext context, mendixsso.proxies.TokenType tokentype)
 	{
-		if (tokentype != null)
+		if (tokentype != null) {
 			getMendixObject().setValue(context, MemberNames.TokenType.toString(), tokentype.toString());
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.TokenType.toString(), null);
+		}
 	}
 
 	/**
@@ -273,6 +282,7 @@ public class Token
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of Token_User
 	 */
 	public final system.proxies.User getToken_User() throws com.mendix.core.CoreException
@@ -283,13 +293,15 @@ public class Token
 	/**
 	 * @param context
 	 * @return value of Token_User
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final system.proxies.User getToken_User(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		system.proxies.User result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.Token_User.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = system.proxies.User.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -309,13 +321,15 @@ public class Token
 	 */
 	public final void setToken_User(com.mendix.systemwideinterfaces.core.IContext context, system.proxies.User token_user)
 	{
-		if (token_user == null)
+		if (token_user == null) {
 			getMendixObject().setValue(context, MemberNames.Token_User.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.Token_User.toString(), token_user.getMendixObject().getId());
+		}
 	}
 
 	/**
+	 * @throws com.mendix.core.CoreException
 	 * @return value of Token_Session
 	 */
 	public final system.proxies.Session getToken_Session() throws com.mendix.core.CoreException
@@ -326,13 +340,15 @@ public class Token
 	/**
 	 * @param context
 	 * @return value of Token_Session
+	 * @throws com.mendix.core.CoreException
 	 */
 	public final system.proxies.Session getToken_Session(com.mendix.systemwideinterfaces.core.IContext context) throws com.mendix.core.CoreException
 	{
 		system.proxies.Session result = null;
 		com.mendix.systemwideinterfaces.core.IMendixIdentifier identifier = getMendixObject().getValue(context, MemberNames.Token_Session.toString());
-		if (identifier != null)
+		if (identifier != null) {
 			result = system.proxies.Session.load(context, identifier);
+		}
 		return result;
 	}
 
@@ -352,10 +368,11 @@ public class Token
 	 */
 	public final void setToken_Session(com.mendix.systemwideinterfaces.core.IContext context, system.proxies.Session token_session)
 	{
-		if (token_session == null)
+		if (token_session == null) {
 			getMendixObject().setValue(context, MemberNames.Token_Session.toString(), null);
-		else
+		} else {
 			getMendixObject().setValue(context, MemberNames.Token_Session.toString(), token_session.getMendixObject().getId());
+		}
 	}
 
 	/**
@@ -377,9 +394,9 @@ public class Token
 	@java.lang.Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
+		if (obj == this) {
 			return true;
-
+		}
 		if (obj != null && getClass().equals(obj.getClass()))
 		{
 			final mendixsso.proxies.Token that = (mendixsso.proxies.Token) obj;
@@ -399,7 +416,7 @@ public class Token
 	 */
 	public static java.lang.String getType()
 	{
-		return "MendixSSO.Token";
+		return entityName;
 	}
 
 	/**
