@@ -2,13 +2,13 @@ stages:
  - report
 
 variables:
-  SIGRID_CI_CUSTOMER: 'aqmdemo'
+  SIGRID_CI_CUSTOMER: '4mendix'
   SIGRID_CI_SYSTEM: 'hackme'
   SIGRID_CI_TARGET_QUALITY: '3.5'
 
 sigridci:
   image: 
-    name: 214775410005.dkr.ecr.eu-central-1.amazonaws.com/mendixpreprocessor:latest
+    name: softwareimprovementgroup/mendixpreprocessor:latest
   stage: report
   script: 
     - ""
@@ -28,7 +28,7 @@ sigridcipublish:
   variables:
     SIGRID_CI_PUBLISH: 'publishonly'
   image: 
-    name: 214775410005.dkr.ecr.eu-central-1.amazonaws.com/mendixpreprocessor:latest
+    name: softwareimprovementgroup/mendixpreprocessor:latest
   stage: report
   script: 
     - ""
