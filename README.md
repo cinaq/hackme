@@ -32,4 +32,4 @@ Feel free to hack inside the app.
 
 Default password: Demo1234@@
 
-trigger 4 may
+trigger 22 July
