@@ -1,0 +1,24 @@
+name: sigrid-publish
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  Mendix-SigridCI-for-QSM:
+    runs-on: ubuntu-latest
+    container: softwareimprovementgroup/mendixpreprocessor:latest
+    env:
+      SIGRID_CI_CUSTOMER: '4mendix'
+      SIGRID_CI_SYSTEM: 'hackme'
+      SIGRID_CI_TOKEN: "${{ secrets.SIGRID_CI_TOKEN }}"
+      MENDIX_TOKEN: "${{ secrets.MENDIX_TOKEN }}"
+      CI_PROJECT_DIR: "."
+      SIGRID_CI_PUBLISH: 'publish'
+      
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - run: |
+          /usr/local/bin/entrypoint.sh
